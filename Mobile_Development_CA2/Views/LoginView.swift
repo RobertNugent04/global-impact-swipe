@@ -11,8 +11,6 @@ import AuthenticationServices
 struct LoginView: View {
     @State private var username: String = ""
     @State private var password: String = ""
-    @State private var isLoginSuccessful: Bool = false
-    @State private var showingAlert: Bool = false
     
     var body: some View {
         VStack {
@@ -87,9 +85,34 @@ struct LoginView: View {
             )
             .frame(width: 325,height: 50)
             .padding(.top, 20)
+            .padding(.bottom)
+            
+            VStack{
+                Spacer()
+                Divider()
+                    .frame(height: 1)
+                    .background(Color.gray)
+                    .padding(.vertical, 10)
+                
+                HStack {
+                    Text("Don't have an Account?")
+                        .foregroundColor(.gray)
+                    
+                    Button(action: {
+                        
+                    }) {
+                        Text("Sign Up")
+                            .foregroundColor(.blue)
+                            .fontWeight(.bold)
+                    }
+                }
+            }
+            .padding(.top, 110)
+            
         }
         .frame(alignment: .center)
         .padding()
+        .padding(.top, 130)
     }
     
 }
