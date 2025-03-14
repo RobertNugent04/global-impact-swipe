@@ -23,12 +23,18 @@ struct LoginView: View {
                 .padding()
             
             TextField("Username", text: $username)
-                .padding()
-                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .font(Font.system(size: 20))
+                .padding(9)
+                .background(RoundedRectangle(cornerRadius: 8).fill(Color.gray.opacity(0.1)))
+                .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 1))
+                .frame(width: 330, height: 100)
             
             SecureField("Password", text: $password)
-                .padding()
-                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .font(Font.system(size: 20))
+                .padding(9)
+                .background(RoundedRectangle(cornerRadius: 8).fill(Color.gray.opacity(0.1)))
+                .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 1))
+                .frame(width: 330)
             
             HStack {
                 Spacer()
@@ -36,7 +42,6 @@ struct LoginView: View {
                 
                 }) {
                     Text("Forgot Password?")
-                        .font(.caption)
                         .foregroundColor(.blue)
                 }
             }
@@ -55,7 +60,22 @@ struct LoginView: View {
             .padding(.top, 20)
             .padding(.bottom, 20)
 
-            Divider()
+            HStack {
+                Divider()
+                    .frame(maxWidth: .infinity, maxHeight: 1)
+                    .background(Color.gray)
+                
+                Text("OR")
+                    .font(.headline)
+                    .foregroundColor(.gray)
+                    .padding(.horizontal, 10)
+                
+                Divider()
+                    .frame(maxWidth: .infinity, maxHeight: 1)
+                    .background(Color.gray)
+            }
+
+
             
             SignInWithAppleButton(
                 onRequest: { request in
@@ -66,7 +86,7 @@ struct LoginView: View {
                 }
             )
             .frame(width: 325,height: 50)
-            .padding(.top, 30)
+            .padding(.top, 20)
         }
         .frame(alignment: .center)
         .padding()
