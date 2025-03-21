@@ -44,6 +44,19 @@ struct LoginView: View {
         NavigationView {
             VStack {
                 
+                VStack {
+                    Image("logo-no-background")
+                        .resizable()
+                        .frame(width: 325, height: 175)
+                        .scaledToFit()
+                    
+                    Text("Global Impact Swipe")
+                        .font(.title)
+                        .fontWeight(.bold)
+                        .foregroundColor(Color(hex: "#333333"))
+                }
+                .padding(.top, 60)
+                
                 TextField("Username", text: $username)
                     .font(Font.system(size: 20))
                     .padding(9)
