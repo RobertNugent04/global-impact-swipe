@@ -11,6 +11,7 @@ import AuthenticationServices
 struct RegisterView: View {
     @State private var username: String = ""
     @State private var password: String = ""
+    @State private var confirmPassword: String = ""
     
     var body: some View {
             VStack {
