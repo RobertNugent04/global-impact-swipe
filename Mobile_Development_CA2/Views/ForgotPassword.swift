@@ -9,8 +9,8 @@ import SwiftUI
 import AuthenticationServices
 
 struct ForgotPasswordView: View {
-    @State private var username: String = ""
-    @State private var password: String = ""
+    @State private var email: String = ""
+    @State private var showAlert: Bool = false
     
     var body: some View {
         NavigationView {
@@ -33,7 +33,7 @@ struct ForgotPasswordView: View {
                     .font(Font.system(size: 20))
                     .padding(.top, 30)
                 
-                TextField("E-Mail", text: $username)
+                TextField("E-Mail", text: $email)
                     .font(Font.system(size: 20))
                     .padding(9)
                     .background(RoundedRectangle(cornerRadius: 8).fill(Color.gray.opacity(0.1)))
@@ -42,7 +42,7 @@ struct ForgotPasswordView: View {
                 
                 
                 Button(action: {
-                    
+                    showAlert = true
                 }) {
                     Text("Submit")
                         .foregroundColor(.white)
@@ -53,13 +53,16 @@ struct ForgotPasswordView: View {
                 }
                 .padding(.top, 10)
                 .padding(.bottom, 20)
-                
+                .alert(isPresented: $showAlert) {
+                                    Alert(title: Text("Password Reset"),
+                                          message: Text("A password reset email has been sent. Please check your inbox."),
+                                          dismissButton: .default(Text("OK")))
+                                }
 
 
             }
             .frame(alignment: .center)
             .padding()
-
             .padding(.bottom, 240)
         }
     }
