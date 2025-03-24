@@ -16,10 +16,17 @@ struct RegisterView: View {
     var body: some View {
             VStack {
                 
-                //Placeholder for Logo
-                Text("Register")
-                    .font(.largeTitle)
-                    .padding()
+                VStack {
+                    Image("logo-no-background")
+                        .resizable()
+                        .frame(width: 325, height: 175)
+                        .scaledToFit()
+                    
+                    Text("Global Impact Swipe")
+                        .font(.title)
+                        .fontWeight(.bold)
+                        .foregroundColor(Color(hex: "#333333"))
+                }
                 
                 TextField("Full Name", text: $username)
                     .font(Font.system(size: 20))
@@ -49,7 +56,7 @@ struct RegisterView: View {
                         .foregroundColor(.white)
                         .padding()
                         .frame(width: 325, height: 50)
-                        .background(Color.blue)
+                        .background(Color(hex: "#4CAF50"))
                         .cornerRadius(8)
                 }
                 .padding(.top, 20)
