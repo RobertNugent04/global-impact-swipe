@@ -76,8 +76,10 @@ struct LoginView: View {
                     Button(action: {
                         
                     }) {
-                        Text("Forgot Password?")
-                            .foregroundColor(.blue)
+                        NavigationLink(destination: ForgotPasswordView()) {
+                            Text("Forgot Password?")
+                                .foregroundColor(.blue)
+                        }
                     }
                 }
                 .padding(.horizontal, 20)
