@@ -7,9 +7,10 @@
 
 import SwiftUI
 import AuthenticationServices
+import FirebaseAuth
 
 struct RegisterView: View {
-    @State private var username: String = ""
+    @State private var email: String = ""
     @State private var password: String = ""
     @State private var confirmPassword: String = ""
     
@@ -28,7 +29,7 @@ struct RegisterView: View {
                         .foregroundColor(Color(hex: "#333333"))
                 }
                 
-                TextField("Full Name", text: $username)
+                TextField("E-Mail", text: $email)
                     .font(Font.system(size: 20))
                     .padding(9)
                     .background(RoundedRectangle(cornerRadius: 8).fill(Color.gray.opacity(0.1)))
@@ -42,7 +43,7 @@ struct RegisterView: View {
                     .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 1))
                     .frame(width: 330, height: 100)
                 
-                SecureField("Confirm Password", text: $password)
+                SecureField("Confirm Password", text: $confirmPassword)
                     .font(Font.system(size: 20))
                     .padding(9)
                     .background(RoundedRectangle(cornerRadius: 8).fill(Color.gray.opacity(0.1)))
@@ -50,7 +51,7 @@ struct RegisterView: View {
                     .frame(width: 330)
                 
                 Button(action: {
-                    
+                    register()
                 }) {
                     Text("Register")
                         .foregroundColor(.white)
@@ -96,6 +97,14 @@ struct RegisterView: View {
             .padding(.top, 130)
             .padding(.bottom, 170)
         }
+    
+    func register(){
+        Auth.auth().createUser(withEmail: email, password: password) {result, error in
+            if error != nil {
+                print(error!.localizedDescription)
+            }}
+    }
+    
     }
 
 #Preview {
