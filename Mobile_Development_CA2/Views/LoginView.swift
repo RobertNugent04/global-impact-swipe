@@ -7,6 +7,7 @@
 
 import SwiftUI
 import AuthenticationServices
+import FirebaseAuth
 
 //Code from https://stackoverflow.com/questions/56874133/use-hex-color-in-swiftui
 extension Color {
@@ -37,7 +38,7 @@ extension Color {
 }
 
 struct LoginView: View {
-    @State private var username: String = ""
+    @State private var email: String = ""
     @State private var password: String = ""
     
     var body: some View {
@@ -57,7 +58,7 @@ struct LoginView: View {
                 }
                 .padding(.top, 35)
                 
-                TextField("Username", text: $username)
+                TextField("E-mail", text: $email)
                     .font(Font.system(size: 20))
                     .padding(9)
                     .background(RoundedRectangle(cornerRadius: 8).fill(Color.gray.opacity(0.1)))
@@ -85,7 +86,7 @@ struct LoginView: View {
                 .padding(.horizontal, 20)
                 
                 Button(action: {
-                    
+                    login()
                 }) {
                     Text("Login")
                         .foregroundColor(.white)
@@ -153,6 +154,13 @@ struct LoginView: View {
             .padding(.top, 130)
             .padding(.bottom, 20)
         }
+    }
+    
+    func login() {
+        Auth.auth().signIn(withEmail: email, password: password) { result, error in
+            if error != nil {
+                print(error!.localizedDescription)
+            }}
     }
         
 }
