@@ -40,8 +40,18 @@ extension Color {
 struct LoginView: View {
     @State private var email: String = ""
     @State private var password: String = ""
+    @State private var userIsLoggedIn = false
     
     var body: some View {
+        if userIsLoggedIn{
+            //Go to home page
+        }
+        else{
+            content
+        }
+    }
+    
+    var content: some View{
         NavigationView {
             VStack {
                 
@@ -153,6 +163,12 @@ struct LoginView: View {
             .padding()
             .padding(.top, 130)
             .padding(.bottom, 20)
+            .onAppear{
+                Auth.auth().addStateDidChangeListener { auth, user in
+                    if user != nil {
+                        userIsLoggedIn.toggle()
+                    }}
+            }
         }
     }
     
