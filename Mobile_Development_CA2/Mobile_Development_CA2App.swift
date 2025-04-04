@@ -6,9 +6,17 @@
 //
 
 import SwiftUI
+import Firebase
+
+
 
 @main
 struct Mobile_Development_CA2App: App {
+    
+    init() {
+        FirebaseApp.configure()
+    }
+    
     var body: some Scene {
         WindowGroup {
             LoginView()
