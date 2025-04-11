@@ -14,7 +14,12 @@ struct MapView: View {
     var coordinate: CLLocationCoordinate2D
 
     var body: some View {
-        Map(position: .constant(.region(region)))
+        Map(position: .constant(.region(region))){
+            Marker("Test", coordinate: CLLocationCoordinate2D(
+                latitude: 34.011_286,
+                longitude: -116.166_868
+            ))
+        }
     }
 
     private var region: MKCoordinateRegion {
