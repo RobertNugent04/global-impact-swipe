@@ -14,16 +14,35 @@ struct SetLocationView: View {
     @State private var searchText = ""
 
     var body: some View {
-        VStack(spacing: 0) {
-
-            NavbarView()
+        ZStack {
             
-            SearchBarView(text: $searchText)
+            VStack(spacing: 0) {
+                NavbarView()
+                
+                SearchBarView(text: $searchText)
+                
+                MapView(coordinate: coordinate)
+                    .edgesIgnoringSafeArea(.bottom)
+            }
 
-            MapView(coordinate: coordinate)
-                .edgesIgnoringSafeArea(.bottom)
+            // Set Location Button
+            VStack {
+                Spacer()
+                Button(action: {
+                    //Set the location of the user
+                }) {
+                    Text("Set Location")
+                        .fontWeight(.bold)
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color(hex: "#2196F3"))
+                        .cornerRadius(10)
+                        .padding(.horizontal, 16)
+                }
+                .padding(.bottom, 16)
+            }
         }
-
     }
 }
 
