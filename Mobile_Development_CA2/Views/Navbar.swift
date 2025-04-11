@@ -16,6 +16,7 @@ struct NavbarView: View {
                 .resizable()
                 .scaledToFit()
                 .frame(height: 60)
+                .padding(.bottom, 10)
             
             Spacer()
             
@@ -24,18 +25,20 @@ struct NavbarView: View {
             }) {
                 Image(systemName: "location.fill")
                     .foregroundColor(.white)
-                    .imageScale(.large)
+                    .font(.system(size: 28))
             }
             .padding(.trailing, 20)
+            .padding(.bottom, 10)
             
             Button(action: {
                 // Navigate to profile view
             }) {
                 Image(systemName: "person.crop.circle")
                     .foregroundColor(.white)
-                    .imageScale(.large)
+                    .font(.system(size: 28))
             }
             .padding(.trailing, 16)
+            .padding(.bottom, 10)
 
         }
         .background(Color(hex: "#4CAF50"))
