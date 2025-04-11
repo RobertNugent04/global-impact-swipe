@@ -9,13 +9,16 @@ import SwiftUI
 import MapKit
 
 struct SetLocationView: View {
-    var coordinate = CLLocationCoordinate2D(latitude: 34.011_286, longitude: -116.166_868)
+    @State var coordinate = CLLocationCoordinate2D(latitude: 34.011_286, longitude: -116.166_868)
+    
+    @State private var searchText = ""
 
     var body: some View {
         VStack(spacing: 0) {
 
             NavbarView()
             
+            SearchBarView(text: $searchText)
 
             MapView(coordinate: coordinate)
                 .edgesIgnoringSafeArea(.bottom)
