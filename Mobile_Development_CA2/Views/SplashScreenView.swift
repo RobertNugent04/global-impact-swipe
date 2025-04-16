@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct SplashScreenView: View {
+    @State private var animateLogo = false
+    
     var body: some View {
         ZStack {
             Color.white.ignoresSafeArea()
@@ -17,7 +19,13 @@ struct SplashScreenView: View {
                     .resizable()
                     .scaledToFit()
                     .frame(width: 400, height: 400)
+                    .rotationEffect(.degrees(animateLogo ? 360 : 0))
+                    .animation(.easeInOut(duration: 2), value: animateLogo)
             }
+        }
+        
+        .onAppear {
+            animateLogo = true
         }
     }
 }
