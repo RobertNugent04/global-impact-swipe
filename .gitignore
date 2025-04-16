@@ -1,0 +1,58 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Xcode
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+xcuserdata/
+*.xcuserdatad
+*.xcscmblueprint
+
+# Build artifacts
+build/
+DerivedData/
+*.o
+*.linkfilelist
+*.hmap
+
+# iOS specific
+Pods/
+Carthage/
+Fastlane/
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Swift Package Manager
+.build/
+Packages/
+Package.resolved
+.swiftpm/
+.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings
+
+# CocoaPods
+Pods/
+Podfile.lock
+
+# Firebase and GoogleService config
+GoogleService-Info.plist
+
+# Temporary files
+*.tmp
+*.swp
+*~
+.idea/
+*.orig
+*.log
+
+# User-specific settings
+*.env
+.env.*
