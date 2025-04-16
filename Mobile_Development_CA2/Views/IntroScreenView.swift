@@ -16,10 +16,20 @@ struct IntroScreenView: View {
                 Image("intro_banner")
                     .resizable()
                     .scaledToFill()
-                    .frame(height: UIScreen.main.bounds.height * 0.65)
+                    .frame(height: UIScreen.main.bounds.height * 0.60)
                     .clipped()
                 
-                Spacer()
+                // Bottom Overlay
+                ZStack {
+                    Color.white
+                        .cornerRadius(60, corners: [.topLeft, .topRight])
+                        .shadow(color: .black.opacity(0.05), radius: 10, x: 0, y: -5)
+                    
+                    Spacer()
+                }
+                .offset(y: -60)
+                .frame(height: UIScreen.main.bounds.height * 0.40)
+
             }
             .edgesIgnoringSafeArea(.top)
     }
