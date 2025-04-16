@@ -46,6 +46,27 @@ struct IntroScreenView: View {
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, 30)
                         
+                        // Subtitle
+                        Text("Discover and support global sustainability projects near you.")
+                            .font(.body)
+                            .foregroundColor(.gray)
+                            .multilineTextAlignment(.center)
+                            .padding(.top, 20)
+                            .padding(.horizontal, 50)
+                        
+                        // Button
+                        NavigationLink(destination: LoginView()) {
+                            Text("Get Started")
+                                .font(.headline)
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .foregroundColor(.white)
+                                .background(Color(hex: "#4CAF50"))
+                                .cornerRadius(20)
+                                .padding(.horizontal, 60)
+                            }
+                            .padding(.top, 30)
+                        
                         Spacer()
                     }
                     .padding(.top, 50)
@@ -59,5 +80,7 @@ struct IntroScreenView: View {
 }
 
 #Preview {
-    IntroScreenView()
+    NavigationView {
+        IntroScreenView()
+    }
 }
