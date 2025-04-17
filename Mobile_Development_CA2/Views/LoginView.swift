@@ -70,9 +70,9 @@ struct LoginView: View {
                     HStack{
                         Group{
                             if isPasswordVisible {
-                                TextField("Enter your password", text: $password)
+                                TextField("Enter password", text: $password)
                             }else{
-                                SecureField("Enter your password", text: $password)
+                                SecureField("Enter password", text: $password)
                             }
                         }.font(Font.system(size: 17))
                         
@@ -142,8 +142,14 @@ struct LoginView: View {
                         /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Code@*/ /*@END_MENU_TOKEN@*/
                     }
                 )
-                .frame(width: 325,height: 50)
-                .padding(.top, 10)
+                .signInWithAppleButtonStyle(.white)
+                .frame(width: 325, height: 50)
+                .background(Color.white)
+                .clipShape(RoundedRectangle(cornerRadius: 16))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 16)
+                        .stroke(Color.gray, lineWidth: 1)
+                )
                 
                 VStack{
                     Spacer()
