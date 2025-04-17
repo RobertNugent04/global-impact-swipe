@@ -198,6 +198,20 @@ struct LoginView: View {
     }
     
     func login() {
+        guard Validators.isValidEmail(email) else {
+            alertMessage = "Please enter a valid email address."
+            isSuccess = false
+            showAlert = true
+            return
+        }
+
+        guard Validators.isValidPassword(password) else {
+            alertMessage = "Password must be at least 6 characters."
+            isSuccess = false
+            showAlert = true
+            return
+        }
+        
         Auth.auth().signIn(withEmail: email, password: password) { result, error in
             if let error = error {
                 alertMessage = error.localizedDescription
