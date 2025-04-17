@@ -8,6 +8,7 @@
 import SwiftUI
 import AuthenticationServices
 import FirebaseAuth
+import Foundation
 
 struct RegisterView: View {
     @State private var email: String = ""
@@ -178,6 +179,20 @@ struct RegisterView: View {
     }
     
     func register(){
+        guard Validators.isValidEmail(email) else {
+            alertMessage = "Please enter a valid email address."
+            isSuccess = false
+            showAlert = true
+            return
+        }
+
+        guard Validators.isValidPassword(password) else {
+            alertMessage = "Password must be at least 6 characters."
+            isSuccess = false
+            showAlert = true
+            return
+        }
+        
         guard password == confirmPassword else {
             alertMessage = "Passwords do not match."
             isSuccess = false
