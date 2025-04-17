@@ -20,19 +20,28 @@ struct AccountView: View {
         VStack(alignment: .leading, spacing: 20) {
             
             VStack {
-                
                 Text("Edit Profile")
                     .font(.title)
                     .fontWeight(.bold)
                     .foregroundColor(Color(hex: "#333333"))
-                
-                Image(systemName: "person.circle.fill")
-                    .resizable()
-                    .frame(width: 150, height: 150)
-                    .scaledToFit()
-                
+
+                ZStack(alignment: .bottomTrailing) {
+                    Image(systemName: "person.circle.fill")
+                        .resizable()
+                        .frame(width: 150, height: 150)
+                        .scaledToFit()
+
+                    Image(systemName: "camera.fill")
+                        .padding(6)
+                        .font(.system(size: 25))
+                        .background(Color.white)
+                        .clipShape(Circle())
+                        .offset(x: 5, y: 5)
+                }
+                .frame(width: 150, height: 150)
             }
             .frame(maxWidth: .infinity)
+
 
             
             // E-mail Title and Field
