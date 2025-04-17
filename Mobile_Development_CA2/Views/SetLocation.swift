@@ -12,27 +12,33 @@ struct SetLocationView: View {
     
     //Default coordinates if none selected
     @State var coordinate = CLLocationCoordinate2D(latitude: 34.011_286, longitude: -116.166_868)
-    
+        
     @State private var searchText = ""
 
     //Location Manger for permissions
     @StateObject private var locationManager = LocationManager()
-    
+        
     //Autcomplete for search bar
     @StateObject private var autocomplete = AutocompleteViewModel()
-    
+        
     @State private var isSelectingSuggestion = false
 
+
     var body: some View {
-        ZStack() {
+        ZStack(alignment: .top) {
             
-            VStack(spacing: 0) {
+            // Map background
+            MapView(coordinate: coordinate)
+                .edgesIgnoringSafeArea(.all)
+            
+            // Search + Suggestions
+            VStack(alignment: .leading, spacing: 0) {
                 
-                NavbarView()
-                
+                // Search Bar
                 SearchBarView(text: $searchText)
+                    .padding(.top, 40)
+                    .padding(.horizontal)
                     .onChange(of: searchText) { oldValue, newValue in
-                        // If a suggestion is being selected, skip updating suggestions
                         if isSelectingSuggestion {
                             isSelectingSuggestion = false
                             return
@@ -45,8 +51,7 @@ struct SetLocationView: View {
                         }
                     }
 
-
-                // Suggestions List
+                // Suggestions list
                 if !autocomplete.suggestions.isEmpty && !searchText.isEmpty {
                     ScrollView {
                         
@@ -58,20 +63,19 @@ struct SetLocationView: View {
                                 //Reference: https://developer.apple.com/documentation/mapkit/mklocalsearch/request
                                 
                                 Button(action: {
-                                    
                                     isSelectingSuggestion = true
                                     
                                     // Combine the suggestion's title and subtitle to create a full query string
                                     let fullQuery = "\(suggestion.title), \(suggestion.subtitle)"
                                     
                                     searchText = fullQuery
-                                    
+                                                                       
                                     // Clear the current autocomplete suggestions after selection
                                     autocomplete.suggestions = []
 
                                     let request = MKLocalSearch.Request()
                                     request.naturalLanguageQuery = fullQuery
-                                    
+                                                                       
                                     let search = MKLocalSearch(request: request)
                                     
                                     search.start { response, error in
@@ -95,14 +99,14 @@ struct SetLocationView: View {
                             }
                         }
                     }
+                    .background(Color.white)
                     .cornerRadius(8)
                     .padding(.horizontal)
-                    .zIndex(1)
                 }
-
-                MapView(coordinate: coordinate)
-                    .edgesIgnoringSafeArea(.bottom)
+                
+                Spacer()
             }
+            .zIndex(2)
 
             VStack {
                 Spacer()
@@ -120,6 +124,7 @@ struct SetLocationView: View {
                 }
                 .padding(.bottom, 16)
             }
+            .zIndex(2)
         }
         .onAppear {
             locationManager.checkLocationAuthorization()
