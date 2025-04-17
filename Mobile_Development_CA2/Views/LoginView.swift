@@ -13,6 +13,7 @@ struct LoginView: View {
     @State private var email: String = ""
     @State private var password: String = ""
     @State private var userIsLoggedIn = false
+    @State private var isPasswordVisible = false
     
     var body: some View {
         if userIsLoggedIn{
@@ -28,31 +29,63 @@ struct LoginView: View {
             VStack {
                 
                 VStack {
-                    Image("logo-no-background")
+                    Image("sdg_logo")
                         .resizable()
-                        .frame(width: 325, height: 175)
+                        .frame(width: 175, height: 175)
                         .scaledToFit()
                     
                     Text("Global Impact Swipe")
                         .font(.title)
-                        .fontWeight(.bold)
+                        .fontWeight(.semibold)
                         .foregroundColor(Color(hex: "#333333"))
                 }
                 .padding(.top, 35)
                 
-                TextField("E-mail", text: $email)
-                    .font(Font.system(size: 20))
-                    .padding(9)
-                    .background(RoundedRectangle(cornerRadius: 8).fill(Color.gray.opacity(0.1)))
-                    .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 1))
-                    .frame(width: 330, height: 100)
+                VStack(alignment: .leading, spacing: -15) {
+                    Text("Email")
+                        .font(.headline)
+                        .fontWeight(.medium)
+                        .foregroundColor(.black)
+                        .padding(.leading, 6)
+                    
+                    TextField("Enter your email", text: $email)
+                        .font(Font.system(size: 17))
+                        .padding(14)
+                        .background(RoundedRectangle(cornerRadius: 8).fill(Color.gray.opacity(0.1)))
+                        .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 1))
+                        .frame(width: 330, height: 100)
+                }
+                .frame(width: 330)
+                .padding(.top, 10)
                 
-                SecureField("Password", text: $password)
-                    .font(Font.system(size: 20))
-                    .padding(9)
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("Password")
+                        .font(.headline)
+                        .fontWeight(.medium)
+                        .foregroundColor(.black)
+                        .padding(.leading, 6)
+                    
+                    HStack{
+                        Group{
+                            if isPasswordVisible {
+                                TextField("Enter your password", text: $password)
+                            }else{
+                                SecureField("Enter your password", text: $password)
+                            }
+                        }.font(Font.system(size: 17))
+                        
+                        Button(action: {
+                            isPasswordVisible.toggle()
+                        }) {
+                            Image(systemName: isPasswordVisible ? "eye.slash.fill" : "eye")
+                                .foregroundColor(.gray)
+                        }
+                    }
+                    .padding()
                     .background(RoundedRectangle(cornerRadius: 8).fill(Color.gray.opacity(0.1)))
                     .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 1))
-                    .frame(width: 330)
+                }
+                .frame(width: 330)
                 
                 HStack {
                     Spacer()
@@ -77,25 +110,27 @@ struct LoginView: View {
                         .background(Color(hex: "#4CAF50"))
                         .cornerRadius(8)
                 }
-                .padding(.top, 20)
-                .padding(.bottom, 20)
+                .padding(.top, 10)
+                .padding(.bottom,10)
                 
-                HStack {
-                    Divider()
-                        .frame(maxWidth: .infinity, maxHeight: 1)
-                        .background(Color.gray)
-                    
+                HStack(alignment: .center) {
+                    Rectangle()
+                        .fill(Color.gray)
+                        .frame(height: 1)
+                        .frame(maxWidth: .infinity)
+
                     Text("OR")
                         .font(.headline)
                         .foregroundColor(.gray)
                         .padding(.horizontal, 10)
-                    
-                    Divider()
-                        .frame(maxWidth: .infinity, maxHeight: 1)
-                        .background(Color.gray)
+
+                    Rectangle()
+                        .fill(Color.gray)
+                        .frame(height: 1)
+                        .frame(maxWidth: .infinity)
                 }
-                
-                
+                .padding(.horizontal, 20)
+                .padding(.vertical, 10)
                 
                 SignInWithAppleButton(
                     onRequest: { request in
@@ -127,7 +162,7 @@ struct LoginView: View {
                         }
                     }
                 }
-                .padding(.top, 50)
+                .padding(.top, 20)
                 .padding(.bottom, 150)
                 
             }
