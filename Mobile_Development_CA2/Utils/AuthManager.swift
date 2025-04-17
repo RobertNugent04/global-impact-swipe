@@ -17,6 +17,15 @@ final class AuthManager: NSObject {
 
     /// Keeps the raw (un‑hashed) nonce until we get the Apple response.
     private var currentNonce: String?
+    
+    /// Adds the hashed  nonce and requested scopes to the Apple ID request.
+    func configureAppleRequest(_ request: ASAuthorizationAppleIDRequest) {
+        let nonce = Self.randomNonceString()
+        currentNonce = nonce
+        request.requestedScopes = [.fullName, .email]
+        request.nonce = Self.sha256(nonce)
+    }
+    
 }
 
 // MARK: - Helpers
