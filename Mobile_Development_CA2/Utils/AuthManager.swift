@@ -26,6 +26,55 @@ final class AuthManager: NSObject {
         request.nonce = Self.sha256(nonce)
     }
     
+    /// Completes the sign‑in flow once Apple returns the users  credentials.
+    func handleAppleResult(
+        _ result: Result<ASAuthorization, Error>,
+        completion: @escaping (Result<AuthDataResult, Error>) -> Void
+    ) {
+        switch result {
+        case .success(let authorization):
+            guard
+                let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential,
+                let tokenData = appleIDCredential.identityToken,
+                let idToken = String(data: tokenData, encoding: .utf8),
+                let nonce = currentNonce
+            else {
+                completion(.failure(AuthErrorCode.invalidCredential as NSError))
+                currentNonce = nil
+                return
+            }
+
+            // Buildthe Firebase credential with the ID token and original nonce.
+            let credential = OAuthProvider.credential(
+                providerID: .apple,
+                idToken: idToken,
+                rawNonce: nonce,
+                accessToken: nil
+            )
+
+            Auth.auth().signIn(with: credential) { [weak self] authResult, error in
+                defer { self?.currentNonce = nil }
+
+                if let error = error {
+                    completion(.failure(error))
+                } else if let authResult = authResult {
+                    completion(.success(authResult))
+                } else {
+                    completion(
+                        .failure(NSError(
+                            domain: "AuthManager",
+                            code: -1,
+                            userInfo: [NSLocalizedDescriptionKey: "Unknown authentication error."]
+                        ))
+                    )
+                }
+            }
+
+        case .failure(let error):
+            currentNonce = nil
+            completion(.failure(error))
+        }
+    }
 }
 
 // MARK: - Helpers
