@@ -149,10 +149,20 @@ struct RegisterView: View {
             
             SignInWithAppleButton(
                 onRequest: { request in
-                    /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Code@*/ /*@END_MENU_TOKEN@*/
+                    AuthManager.shared.configureAppleRequest(request)
                 },
                 onCompletion: { result in
-                    /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Code@*/ /*@END_MENU_TOKEN@*/
+                    AuthManager.shared.handleAppleResult(result) { res in
+                        switch res {
+                        case .success:
+                            alertMessage = "Login with Apple successful!"
+                            isSuccess = true
+                        case .failure(let error):
+                            alertMessage = error.localizedDescription
+                            isSuccess = false
+                        }
+                        showAlert = true
+                    }
                 }
             )
             .signInWithAppleButtonStyle(.white)

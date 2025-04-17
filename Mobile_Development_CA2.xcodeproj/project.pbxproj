@@ -34,9 +34,22 @@
 		3F4562262D7EEA2C008CCBB4 /* Mobile_Development_CA2UITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Mobile_Development_CA2UITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		CDF6E19F2DB1AA8E00DA9AD5 /* Exceptions for "Mobile_Development_CA2" folder in "Mobile_Development_CA2" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 3F45620B2D7EEA2B008CCBB4 /* Mobile_Development_CA2 */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		3F45620E2D7EEA2B008CCBB4 /* Mobile_Development_CA2 */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				CDF6E19F2DB1AA8E00DA9AD5 /* Exceptions for "Mobile_Development_CA2" folder in "Mobile_Development_CA2" target */,
+			);
 			path = Mobile_Development_CA2;
 			sourceTree = "<group>";
 		};
