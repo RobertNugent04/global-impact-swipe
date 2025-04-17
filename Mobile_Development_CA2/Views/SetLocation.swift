@@ -20,6 +20,8 @@ struct SetLocationView: View {
     
     //Autcomplete for search bar
     @StateObject private var autocomplete = AutocompleteViewModel()
+    
+    @State private var isSelectingSuggestion = false
 
     var body: some View {
         ZStack() {
@@ -30,12 +32,19 @@ struct SetLocationView: View {
                 
                 SearchBarView(text: $searchText)
                     .onChange(of: searchText) { oldValue, newValue in
+                        // If a suggestion is being selected, skip updating suggestions
+                        if isSelectingSuggestion {
+                            isSelectingSuggestion = false
+                            return
+                        }
+
                         if newValue.isEmpty {
                             autocomplete.suggestions = []
                         } else {
                             autocomplete.updateSearch(query: newValue)
                         }
                     }
+
 
                 // Suggestions List
                 if !autocomplete.suggestions.isEmpty && !searchText.isEmpty {
@@ -49,6 +58,9 @@ struct SetLocationView: View {
                                 //Reference: https://developer.apple.com/documentation/mapkit/mklocalsearch/request
                                 
                                 Button(action: {
+                                    
+                                    isSelectingSuggestion = true
+                                    
                                     // Combine the suggestion's title and subtitle to create a full query string
                                     let fullQuery = "\(suggestion.title), \(suggestion.subtitle)"
                                     
@@ -63,7 +75,7 @@ struct SetLocationView: View {
                                     let search = MKLocalSearch(request: request)
                                     
                                     search.start { response, error in
-                                        // Safely unwrap the first result (if any) from the response
+                                        // Unwrap the first result (if any) from the response else exit the function
                                         guard let item = response?.mapItems.first else { return }
                                         coordinate = item.placemark.coordinate
                                     }
