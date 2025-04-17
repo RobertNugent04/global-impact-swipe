@@ -19,10 +19,28 @@ struct AccountView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
             
+            VStack {
+                
+                Text("Edit Profile")
+                    .font(.title)
+                    .fontWeight(.bold)
+                    .foregroundColor(Color(hex: "#333333"))
+                
+                Image(systemName: "person.circle.fill")
+                    .resizable()
+                    .frame(width: 150, height: 150)
+                    .scaledToFit()
+                
+            }
+            .frame(maxWidth: .infinity)
+
+            
             // E-mail Title and Field
             Text("Name")
                 .font(.headline)
                 .foregroundColor(.black)
+                .padding(.leading, 22)
+   
             TextField("", text: $name)
                 .font(Font.system(size: 20))
                 .padding(9)
@@ -30,11 +48,14 @@ struct AccountView: View {
                 .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 1))
                 .frame(width: 330)
                 .disabled(true)
+                .frame(maxWidth: .infinity)
+            
             
             // E-mail Title and Field
             Text("E-mail")
                 .font(.headline)
                 .foregroundColor(.black)
+                .padding(.leading, 22)
             TextField("", text: $email)
                 .font(Font.system(size: 20))
                 .padding(9)
@@ -42,11 +63,14 @@ struct AccountView: View {
                 .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 1))
                 .frame(width: 330)
                 .disabled(true)
+                .frame(maxWidth: .infinity)
+                
 
             // Password Title and Field
             Text("Phone Number")
                 .font(.headline)
                 .foregroundColor(.black)
+                .padding(.leading, 22)
             TextField("", text: $phoneNumber)
                 .font(Font.system(size: 20))
                 .padding(9)
@@ -54,10 +78,12 @@ struct AccountView: View {
                 .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 1))
                 .frame(width: 330)
                 .disabled(true)
+                .frame(maxWidth: .infinity)
 
             Text("Password")
                 .font(.headline)
                 .foregroundColor(.black)
+                .padding(.leading, 22)
             SecureField("", text: $password)
                 .font(Font.system(size: 20))
                 .padding(9)
@@ -65,13 +91,17 @@ struct AccountView: View {
                 .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 1))
                 .frame(width: 330)
                 .disabled(true)
+                .frame(maxWidth: .infinity)
      
         }
         .padding()
         .padding(.top, 130)
         .padding(.bottom, 170)
+        
     }
+    
 }
+
 
 #Preview {
     AccountView()
