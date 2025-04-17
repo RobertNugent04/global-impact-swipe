@@ -15,6 +15,7 @@ struct RegisterView: View {
     @State private var password: String = ""
     @State private var confirmPassword: String = ""
     @State private var isPasswordVisible = false
+    @State private var isConfirmPasswordVisible = false
     @State private var showAlert = false
     @State private var alertMessage = ""
     @State private var isSuccess = false
@@ -93,7 +94,7 @@ struct RegisterView: View {
                 
                 HStack{
                     Group{
-                        if isPasswordVisible {
+                        if isConfirmPasswordVisible {
                             TextField("Enter confirm password", text: $confirmPassword)
                         }else{
                             SecureField("Enter confirm password", text: $confirmPassword)
@@ -101,9 +102,9 @@ struct RegisterView: View {
                     }.font(Font.system(size: 17))
                     
                     Button(action: {
-                        isPasswordVisible.toggle()
+                        isConfirmPasswordVisible.toggle()
                     }) {
-                        Image(systemName: isPasswordVisible ? "eye.slash.fill" : "eye")
+                        Image(systemName: isConfirmPasswordVisible ? "eye.slash.fill" : "eye")
                             .foregroundColor(.gray)
                     }
                 }
