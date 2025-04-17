@@ -99,10 +99,12 @@ struct SetLocationView: View {
                             }
                         }
                     }
+                    .frame(width: 325, height: 200)
                     .background(Color.white)
                     .cornerRadius(8)
-                    .padding(.horizontal)
+                    .padding(.horizontal, 30)
                 }
+                
                 
                 Spacer()
             }
@@ -118,7 +120,7 @@ struct SetLocationView: View {
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(Color(hex: "#2196F3"))
+                        .background(Color(hex: "#4CAF50"))
                         .cornerRadius(10)
                         .padding(.horizontal, 16)
                 }
