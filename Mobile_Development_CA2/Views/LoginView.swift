@@ -14,6 +14,9 @@ struct LoginView: View {
     @State private var password: String = ""
     @State private var userIsLoggedIn = false
     @State private var isPasswordVisible = false
+    @State private var showAlert = false
+    @State private var alertMessage = ""
+    @State private var isSuccess = false
     
     var body: some View {
         if userIsLoggedIn{
@@ -178,20 +181,34 @@ struct LoginView: View {
             .padding()
             .padding(.top, 130)
             .padding(.bottom, 20)
-            .onAppear{
-                Auth.auth().addStateDidChangeListener { auth, user in
-                    if user != nil {
-                        userIsLoggedIn.toggle()
-                    }}
+            .alert(isPresented: $showAlert) {
+                Alert(
+                    title: Text(isSuccess ? "Success" : "Error"),
+                    message: Text(alertMessage),
+                    dismissButton: .default(Text("OK"))
+                )
             }
+//            .onAppear{
+//                Auth.auth().addStateDidChangeListener { auth, user in
+//                    if user != nil {
+//                        userIsLoggedIn.toggle()
+//                    }}
+//            }
         }
     }
     
     func login() {
         Auth.auth().signIn(withEmail: email, password: password) { result, error in
-            if error != nil {
-                print(error!.localizedDescription)
-            }}
+            if let error = error {
+                alertMessage = error.localizedDescription
+                isSuccess = false
+            } else {
+                alertMessage = "Login successful!"
+                isSuccess = true
+                // userIsLoggedIn = true
+            }
+            showAlert = true
+        }
     }
         
 }

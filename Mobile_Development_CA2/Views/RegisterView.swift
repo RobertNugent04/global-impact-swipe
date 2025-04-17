@@ -14,167 +14,190 @@ struct RegisterView: View {
     @State private var password: String = ""
     @State private var confirmPassword: String = ""
     @State private var isPasswordVisible = false
+    @State private var showAlert = false
+    @State private var alertMessage = ""
+    @State private var isSuccess = false
     
     var body: some View {
+        VStack {
+            
             VStack {
+                Image("sdg_logo")
+                    .resizable()
+                    .frame(width: 175, height: 175)
+                    .scaledToFit()
                 
-                VStack {
-                    Image("sdg_logo")
-                        .resizable()
-                        .frame(width: 175, height: 175)
-                        .scaledToFit()
-                    
-                    Text("Global Impact Swipe")
-                        .font(.title)
-                        .fontWeight(.semibold)
-                        .foregroundColor(Color(hex: "#333333"))
-                }
-                .padding(.top, 35)
-                
-                VStack(alignment: .leading, spacing: -15) {
-                    Text("Email")
-                        .font(.headline)
-                        .fontWeight(.medium)
-                        .foregroundColor(.black)
-                        .padding(.leading, 6)
-                    
-                    TextField("Enter your email", text: $email)
-                        .font(Font.system(size: 17))
-                        .padding(14)
-                        .background(RoundedRectangle(cornerRadius: 8).fill(Color.gray.opacity(0.1)))
-                        .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 1))
-                        .frame(width: 330, height: 100)
-                        .textInputAutocapitalization(.never)
-                        .autocorrectionDisabled(true)
-                }
-                .frame(width: 330)
-                .padding(.top, 10)
-                
-                VStack(alignment: .leading, spacing: 6) {
-                    Text("Password")
-                        .font(.headline)
-                        .fontWeight(.medium)
-                        .foregroundColor(.black)
-                        .padding(.leading, 6)
-                    
-                    HStack{
-                        Group{
-                            if isPasswordVisible {
-                                TextField("Enter password", text: $password)
-                            }else{
-                                SecureField("Enter password", text: $password)
-                            }
-                        }.font(Font.system(size: 17))
-                        
-                        Button(action: {
-                            isPasswordVisible.toggle()
-                        }) {
-                            Image(systemName: isPasswordVisible ? "eye.slash.fill" : "eye")
-                                .foregroundColor(.gray)
-                        }
-                    }
-                    .padding()
-                    .background(RoundedRectangle(cornerRadius: 8).fill(Color.gray.opacity(0.1)))
-                    .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 1))
-                }
-                .frame(width: 330)
-                .padding(.top, -15.0)
-                
-                VStack(alignment: .leading, spacing: 6) {
-                    Text("Confirm Password")
-                        .font(.headline)
-                        .fontWeight(.medium)
-                        .foregroundColor(.black)
-                        .padding(.leading, 6)
-                    
-                    HStack{
-                        Group{
-                            if isPasswordVisible {
-                                TextField("Enter confirm password", text: $confirmPassword)
-                            }else{
-                                SecureField("Enter confirm password", text: $confirmPassword)
-                            }
-                        }.font(Font.system(size: 17))
-                        
-                        Button(action: {
-                            isPasswordVisible.toggle()
-                        }) {
-                            Image(systemName: isPasswordVisible ? "eye.slash.fill" : "eye")
-                                .foregroundColor(.gray)
-                        }
-                    }
-                    .padding()
-                    .background(RoundedRectangle(cornerRadius: 8).fill(Color.gray.opacity(0.1)))
-                    .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 1))
-                }
-                .frame(width: 330)
-                .padding(.top, 8.0)
-                
-                Button(action: {
-                    register()
-                }) {
-                    Text("Register")
-                        .foregroundColor(.white)
-                        .padding()
-                        .frame(width: 325, height: 50)
-                        .background(Color(hex: "#4CAF50"))
-                        .cornerRadius(8)
-                }
-                .padding(.top, 20)
-                .padding(.bottom, 20)
-                
-                HStack(alignment: .center) {
-                    Rectangle()
-                        .fill(Color.gray)
-                        .frame(height: 1)
-                        .frame(maxWidth: .infinity)
-
-                    Text("OR")
-                        .font(.headline)
-                        .foregroundColor(.gray)
-                        .padding(.horizontal, 10)
-
-                    Rectangle()
-                        .fill(Color.gray)
-                        .frame(height: 1)
-                        .frame(maxWidth: .infinity)
-                }
-                .padding(.horizontal, 20)
-                .padding(.vertical, 10)
-                
-                SignInWithAppleButton(
-                    onRequest: { request in
-                        /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Code@*/ /*@END_MENU_TOKEN@*/
-                    },
-                    onCompletion: { result in
-                        /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Code@*/ /*@END_MENU_TOKEN@*/
-                    }
-                )
-                .signInWithAppleButtonStyle(.white)
-                .frame(width: 325, height: 50)
-                .background(Color.white)
-                .clipShape(RoundedRectangle(cornerRadius: 16))
-                .overlay(
-                    RoundedRectangle(cornerRadius: 16)
-                        .stroke(Color.gray, lineWidth: 1)
-                )
-                
-                
+                Text("Global Impact Swipe")
+                    .font(.title)
+                    .fontWeight(.semibold)
+                    .foregroundColor(Color(hex: "#333333"))
             }
-            .frame(alignment: .center)
-            .padding()
-            .padding(.top, 130)
-            .padding(.bottom, 170)
+            .padding(.top, 35)
+            
+            VStack(alignment: .leading, spacing: -15) {
+                Text("Email")
+                    .font(.headline)
+                    .fontWeight(.medium)
+                    .foregroundColor(.black)
+                    .padding(.leading, 6)
+                
+                TextField("Enter your email", text: $email)
+                    .font(Font.system(size: 17))
+                    .padding(14)
+                    .background(RoundedRectangle(cornerRadius: 8).fill(Color.gray.opacity(0.1)))
+                    .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 1))
+                    .frame(width: 330, height: 100)
+                    .textInputAutocapitalization(.never)
+                    .autocorrectionDisabled(true)
+            }
+            .frame(width: 330)
+            .padding(.top, 10)
+            
+            VStack(alignment: .leading, spacing: 6) {
+                Text("Password")
+                    .font(.headline)
+                    .fontWeight(.medium)
+                    .foregroundColor(.black)
+                    .padding(.leading, 6)
+                
+                HStack{
+                    Group{
+                        if isPasswordVisible {
+                            TextField("Enter password", text: $password)
+                        }else{
+                            SecureField("Enter password", text: $password)
+                        }
+                    }.font(Font.system(size: 17))
+                    
+                    Button(action: {
+                        isPasswordVisible.toggle()
+                    }) {
+                        Image(systemName: isPasswordVisible ? "eye.slash.fill" : "eye")
+                            .foregroundColor(.gray)
+                    }
+                }
+                .padding()
+                .background(RoundedRectangle(cornerRadius: 8).fill(Color.gray.opacity(0.1)))
+                .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 1))
+            }
+            .frame(width: 330)
+            .padding(.top, -15.0)
+            
+            VStack(alignment: .leading, spacing: 6) {
+                Text("Confirm Password")
+                    .font(.headline)
+                    .fontWeight(.medium)
+                    .foregroundColor(.black)
+                    .padding(.leading, 6)
+                
+                HStack{
+                    Group{
+                        if isPasswordVisible {
+                            TextField("Enter confirm password", text: $confirmPassword)
+                        }else{
+                            SecureField("Enter confirm password", text: $confirmPassword)
+                        }
+                    }.font(Font.system(size: 17))
+                    
+                    Button(action: {
+                        isPasswordVisible.toggle()
+                    }) {
+                        Image(systemName: isPasswordVisible ? "eye.slash.fill" : "eye")
+                            .foregroundColor(.gray)
+                    }
+                }
+                .padding()
+                .background(RoundedRectangle(cornerRadius: 8).fill(Color.gray.opacity(0.1)))
+                .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 1))
+            }
+            .frame(width: 330)
+            .padding(.top, 8.0)
+            
+            Button(action: {
+                register()
+            }) {
+                Text("Register")
+                    .foregroundColor(.white)
+                    .padding()
+                    .frame(width: 325, height: 50)
+                    .background(Color(hex: "#4CAF50"))
+                    .cornerRadius(8)
+            }
+            .padding(.top, 20)
+            .padding(.bottom, 20)
+            
+            HStack(alignment: .center) {
+                Rectangle()
+                    .fill(Color.gray)
+                    .frame(height: 1)
+                    .frame(maxWidth: .infinity)
+                
+                Text("OR")
+                    .font(.headline)
+                    .foregroundColor(.gray)
+                    .padding(.horizontal, 10)
+                
+                Rectangle()
+                    .fill(Color.gray)
+                    .frame(height: 1)
+                    .frame(maxWidth: .infinity)
+            }
+            .padding(.horizontal, 20)
+            .padding(.vertical, 10)
+            
+            SignInWithAppleButton(
+                onRequest: { request in
+                    /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Code@*/ /*@END_MENU_TOKEN@*/
+                },
+                onCompletion: { result in
+                    /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Code@*/ /*@END_MENU_TOKEN@*/
+                }
+            )
+            .signInWithAppleButtonStyle(.white)
+            .frame(width: 325, height: 50)
+            .background(Color.white)
+            .clipShape(RoundedRectangle(cornerRadius: 16))
+            .overlay(
+                RoundedRectangle(cornerRadius: 16)
+                    .stroke(Color.gray, lineWidth: 1)
+            )
+            
+            
         }
+        .frame(alignment: .center)
+        .padding()
+        .padding(.top, 130)
+        .padding(.bottom, 170)
+        .alert(isPresented: $showAlert) {
+                Alert(
+                    title: Text(isSuccess ? "Success" : "Error"),
+                    message: Text(alertMessage),
+                    dismissButton: .default(Text("OK"))
+                )
+            }
+    }
     
     func register(){
+        guard password == confirmPassword else {
+            alertMessage = "Passwords do not match."
+            isSuccess = false
+            showAlert = true
+            return
+        }
+        
         Auth.auth().createUser(withEmail: email, password: password) {result, error in
-            if error != nil {
-                print(error!.localizedDescription)
-            }}
+            if let error = error {
+                alertMessage = error.localizedDescription
+                isSuccess = false
+            }else{
+                alertMessage = "Registration successful."
+                isSuccess = true
+                // Navigation will be done here
+            }
+            showAlert = true
+        }
     }
-    
-    }
+}
 
 #Preview {
     RegisterView()
