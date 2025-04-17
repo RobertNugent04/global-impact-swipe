@@ -54,6 +54,8 @@ struct LoginView: View {
                         .background(RoundedRectangle(cornerRadius: 8).fill(Color.gray.opacity(0.1)))
                         .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 1))
                         .frame(width: 330, height: 100)
+                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled(true)
                 }
                 .frame(width: 330)
                 .padding(.top, 10)
