@@ -1,0 +1,139 @@
+//
+//  SetLocation.swift
+//  Mobile_Development_CA2
+//
+//  Created by Student on 11/04/2025.
+//
+
+import SwiftUI
+import MapKit
+
+struct SetLocationView: View {
+    
+    //Default coordinates if none selected
+    @State var coordinate = CLLocationCoordinate2D(latitude: 34.011_286, longitude: -116.166_868)
+        
+    @State private var searchText = ""
+
+    //Location Manger for permissions
+    @StateObject private var locationManager = LocationManager()
+        
+    //Autcomplete for search bar
+    @StateObject private var autocomplete = AutocompleteViewModel()
+        
+    @State private var isSelectingSuggestion = false
+
+
+    var body: some View {
+        ZStack(alignment: .top) {
+            
+            // Map background
+            MapView(coordinate: coordinate)
+                .edgesIgnoringSafeArea(.all)
+            
+            // Search + Suggestions
+            VStack(alignment: .leading, spacing: 0) {
+                
+                // Search Bar
+                SearchBarView(text: $searchText)
+                    .padding(.top, 40)
+                    .padding(.horizontal)
+                    .onChange(of: searchText) { oldValue, newValue in
+                        if isSelectingSuggestion {
+                            isSelectingSuggestion = false
+                            return
+                        }
+
+                        if newValue.isEmpty {
+                            autocomplete.suggestions = []
+                        } else {
+                            autocomplete.updateSearch(query: newValue)
+                        }
+                    }
+
+                // Suggestions list
+                if !autocomplete.suggestions.isEmpty && !searchText.isEmpty {
+                    ScrollView {
+                        
+                        VStack(alignment: .leading, spacing: 0) {
+                            
+                            // Loop through each suggestion in the autocomplete results
+                            ForEach(autocomplete.suggestions, id: \.self) { suggestion in
+                                
+                                //Reference: https://developer.apple.com/documentation/mapkit/mklocalsearch/request
+                                
+                                Button(action: {
+                                    isSelectingSuggestion = true
+                                    
+                                    // Combine the suggestion's title and subtitle to create a full query string
+                                    let fullQuery = "\(suggestion.title), \(suggestion.subtitle)"
+                                    
+                                    searchText = fullQuery
+                                                                       
+                                    // Clear the current autocomplete suggestions after selection
+                                    autocomplete.suggestions = []
+
+                                    let request = MKLocalSearch.Request()
+                                    request.naturalLanguageQuery = fullQuery
+                                                                       
+                                    let search = MKLocalSearch(request: request)
+                                    
+                                    search.start { response, error in
+                                        // Unwrap the first result (if any) from the response else exit the function
+                                        guard let item = response?.mapItems.first else { return }
+                                        coordinate = item.placemark.coordinate
+                                    }
+                                }) {
+                                    VStack(alignment: .leading) {
+                                        Text(suggestion.title)
+                                            .fontWeight(.medium)
+                                        if !suggestion.subtitle.isEmpty {
+                                            Text(suggestion.subtitle)
+                                                .font(.caption)
+                                                .foregroundColor(.gray)
+                                        }
+                                    }
+                                    .padding()
+                                    .background(Color.white)
+                                }
+                            }
+                        }
+                    }
+                    .frame(width: 325, height: 200)
+                    .background(Color.white)
+                    .cornerRadius(8)
+                    .padding(.horizontal, 30)
+                }
+                
+                
+                Spacer()
+            }
+            .zIndex(2)
+
+            VStack {
+                Spacer()
+                Button(action: {
+                    // Set the location of the user
+                }) {
+                    Text("Set Location")
+                        .fontWeight(.bold)
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color(hex: "#4CAF50"))
+                        .cornerRadius(10)
+                        .padding(.horizontal, 16)
+                }
+                .padding(.bottom, 16)
+            }
+            .zIndex(2)
+        }
+        .onAppear {
+            locationManager.checkLocationAuthorization()
+        }
+    }
+}
+
+#Preview {
+    SetLocationView()
+}
