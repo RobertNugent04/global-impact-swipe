@@ -6,7 +6,7 @@
 //
 
 //Some of the following code is taken from:
-//https://hackernoon.com/address-autocompletion-using-swiftui-and-mapkit?utm_source=chatgpt.com
+//https://hackernoon.com/address-autocompletion-using-swiftui-and-mapkit
 //https://www.youtube.com/watch?v=cOD1l2lv2Jw
 
 
