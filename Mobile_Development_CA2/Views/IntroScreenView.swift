@@ -12,10 +12,8 @@ struct IntroScreenView: View {
             
             // Bottom Overlay
             ZStack {
-                // Rounded container with white background
-                RoundedRectangle(cornerRadius: 60, style: .continuous)
-                    .fill(Color.white)
-                    .shadow(color: .black.opacity(0.05), radius: 10, x: 0, y: -5)
+                Color.white                             .cornerRadius(60, corners: [.topLeft, .topRight])
+                    .shadow(color: .gray.opacity(0.1), radius: 10, y: -5)
 
                 // Content inside overlay
                 VStack {
@@ -66,7 +64,7 @@ struct IntroScreenView: View {
             }
             .frame(maxWidth: 404)
             .offset(y: -60)
-            .frame(height: 430)
+            .frame(height: 440)
         }
         .edgesIgnoringSafeArea(.top)
         .edgesIgnoringSafeArea(.bottom)

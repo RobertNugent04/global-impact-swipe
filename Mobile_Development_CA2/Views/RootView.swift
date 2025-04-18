@@ -12,15 +12,20 @@ struct RootView: View {
 
     var body: some View {
         NavigationStack {
-            if showIntro {
-                IntroScreenView()
-            } else {
-                SplashScreenView()
-                    .onAppear {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 4.5) {
-                            showIntro = true
-                        }
-                    }
+            ZStack {
+                if showIntro {
+                    IntroScreenView()
+                        .transition(.opacity)
+                } else {
+                    SplashScreenView()
+                        .transition(.opacity)
+                }
+            }
+            .animation(.easeInOut(duration: 1.0), value: showIntro)
+            .onAppear {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 4.5) {
+                    showIntro = true
+                }
             }
         }
     }

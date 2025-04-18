@@ -17,17 +17,17 @@ struct ForgotPasswordView: View {
             VStack {
                 
                 VStack {
-                    Image("logo-no-background")
+                    Image("sdg_logo")
                         .resizable()
-                        .frame(width: 325, height: 175)
+                        .frame(width: 175, height: 175)
                         .scaledToFit()
                     
                     Text("Global Impact Swipe")
                         .font(.title)
-                        .fontWeight(.bold)
+                        .fontWeight(.semibold)
                         .foregroundColor(Color(hex: "#333333"))
                 }
-                .padding(.bottom, 35)
+                .padding(.top, 35)
                 
                 Text("Please enter your e-mail address")
                     .font(Font.system(size: 20))

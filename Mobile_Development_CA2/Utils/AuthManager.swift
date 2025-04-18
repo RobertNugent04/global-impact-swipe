@@ -1,0 +1,110 @@
+//
+//  AuthManager.swift
+//  Mobile_Development_CA2
+//
+//  Created by Patrick Orjieh on 12/04/2025.
+//
+
+import Foundation
+import AuthenticationServices
+import FirebaseAuth
+import CryptoKit
+
+/// Singleton that will handle Sign in with Apple with Firebase.
+final class AuthManager: NSObject {
+
+    static let shared = AuthManager()
+
+    /// Keeps the raw (un‑hashed) nonce until we get the Apple response.
+    private var currentNonce: String?
+    
+    /// Adds the hashed  nonce and requested scopes to the Apple ID request.
+    func configureAppleRequest(_ request: ASAuthorizationAppleIDRequest) {
+        let nonce = Self.randomNonceString()
+        currentNonce = nonce
+        request.requestedScopes = [.fullName, .email]
+        request.nonce = Self.sha256(nonce)
+    }
+    
+    /// Completes the sign‑in flow once Apple returns the users  credentials.
+    func handleAppleResult(
+        _ result: Result<ASAuthorization, Error>,
+        completion: @escaping (Result<AuthDataResult, Error>) -> Void
+    ) {
+        switch result {
+        case .success(let authorization):
+            guard
+                let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential,
+                let tokenData = appleIDCredential.identityToken,
+                let idToken = String(data: tokenData, encoding: .utf8),
+                let nonce = currentNonce
+            else {
+                completion(.failure(AuthErrorCode.invalidCredential as NSError))
+                currentNonce = nil
+                return
+            }
+
+            // Buildthe Firebase credential with the ID token and original nonce.
+            let credential = OAuthProvider.credential(
+                providerID: .apple,
+                idToken: idToken,
+                rawNonce: nonce,
+                accessToken: nil
+            )
+
+            Auth.auth().signIn(with: credential) { [weak self] authResult, error in
+                defer { self?.currentNonce = nil }
+
+                if let error = error {
+                    completion(.failure(error))
+                } else if let authResult = authResult {
+                    completion(.success(authResult))
+                } else {
+                    completion(
+                        .failure(NSError(
+                            domain: "AuthManager",
+                            code: -1,
+                            userInfo: [NSLocalizedDescriptionKey: "Unknown authentication error."]
+                        ))
+                    )
+                }
+            }
+
+        case .failure(let error):
+            currentNonce = nil
+            completion(.failure(error))
+        }
+    }
+}
+
+// MARK: - Helpers
+private extension AuthManager {
+
+    /// Generates a cryptographically secure random nonce of the given length.
+    static func randomNonceString(length: Int = 32) -> String {
+        precondition(length > 0)
+        let charset = Array("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-._")
+        var result = ""
+        var remaining = length
+
+        while remaining > 0 {
+            var random: UInt8 = 0
+            let status = SecRandomCopyBytes(kSecRandomDefault, 1, &random)
+            guard status == errSecSuccess else {
+                fatalError("Unable to generate nonce. SecRandomCopyBytes failed.")
+            }
+            if random < charset.count {
+                result.append(charset[Int(random)])
+                remaining -= 1
+            }
+        }
+        return result
+    }
+
+    /// Returns the SHA‑256 hash of the input string as a hex‑encoded string.
+    static func sha256(_ input: String) -> String {
+        let data = Data(input.utf8)
+        let hashed = SHA256.hash(data: data)
+        return hashed.compactMap { String(format: "%02x", $0) }.joined()
+    }
+}
