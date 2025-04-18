@@ -8,10 +8,12 @@
 import SwiftUI
 
 enum TabBarItem: Hashable, CaseIterable {
-    case swipe, matches, notifications, profile
+    case home, swipe, matches, notifications, profile
     
     var icon: String {
         switch self {
+        case .home:
+            return "house"
         case .swipe:
             return "arrow.left.arrow.right"
         case .matches:
