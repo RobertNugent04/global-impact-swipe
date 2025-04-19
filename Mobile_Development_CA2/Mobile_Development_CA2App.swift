@@ -12,6 +12,7 @@ import Firebase
 
 @main
 struct Mobile_Development_CA2App: App {
+    @StateObject var session = SessionManager.shared
     
     init() {
         FirebaseApp.configure()
@@ -20,6 +21,7 @@ struct Mobile_Development_CA2App: App {
     var body: some Scene {
         WindowGroup {
             RootView()
+                .environmentObject(session)
         }
     }
 }
