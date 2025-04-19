@@ -12,7 +12,7 @@ import SwiftUI
 struct TabBarBackground: Shape{
     func path(in rect: CGRect) -> Path {
         var p = Path()
-        let curveWidth: CGFloat = 120
+        let curveWidth: CGFloat = 160
         let curveDepth: CGFloat = 40
         
         p.addRoundedRect(in: rect, cornerSize: .init(width: 20, height: 20))

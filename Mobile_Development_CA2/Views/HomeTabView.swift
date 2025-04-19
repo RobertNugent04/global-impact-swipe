@@ -31,3 +31,7 @@ struct HomeTabView: View {
         .ignoresSafeArea(.keyboard)
     }
 }
+
+#Preview {
+    HomeTabView()
+}
