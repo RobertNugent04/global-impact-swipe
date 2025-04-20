@@ -8,23 +8,29 @@
 import SwiftUI
 
 struct RootView: View {
-    @State private var showIntro = false
+    @State private var hasFinishedSplash = false
+    @EnvironmentObject var session: SessionManager
 
     var body: some View {
         NavigationStack {
             ZStack {
-                if showIntro {
-                    IntroScreenView()
-                        .transition(.opacity)
+                if hasFinishedSplash {
+                    if session.isLoggedIn {
+                        HomeTabView()
+                            .transition(.opacity)
+                    }else{
+                        IntroScreenView()
+                            .transition(.opacity)
+                    }
                 } else {
                     SplashScreenView()
                         .transition(.opacity)
                 }
             }
-            .animation(.easeInOut(duration: 1.0), value: showIntro)
+            .animation(.easeInOut(duration: 1.0), value: hasFinishedSplash)
             .onAppear {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 4.5) {
-                    showIntro = true
+                    hasFinishedSplash = true
                 }
             }
         }
