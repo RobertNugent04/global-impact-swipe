@@ -14,29 +14,49 @@ class SessionManager: ObservableObject {
     @Published var isLoggedIn: Bool = false
     @Published var userEmail: String? = nil
     
-    private let userDefaultsKey = "currentUserEmail"
+    private let userDefaultsEmailKey = "currentUserEmail"
+    private let userDefaultsLoginTimeKey = "currentUserLoginTime"
+    private let sessionExpiryDuration: TimeInterval = 36 // 1 hour
     
     init(){
         checkLoginStatus()
     }
     
     func loginUser(email: String){
+        let now = Date()
         self.userEmail = email
         self.isLoggedIn = true
-        UserDefaults.standard.set(email, forKey: userDefaultsKey)
+        
+        UserDefaults.standard.set(email, forKey: userDefaultsEmailKey)
+        UserDefaults.standard.set(now, forKey: userDefaultsLoginTimeKey)
     }
     
     func logoutUser(){
         try? Auth.auth().signOut()
         self.userEmail = nil
         self.isLoggedIn = false
-        UserDefaults.standard.removeObject(forKey: userDefaultsKey)
+        
+        UserDefaults.standard.removeObject(forKey: userDefaultsEmailKey)
+        UserDefaults.standard.removeObject(forKey: userDefaultsLoginTimeKey)
     }
     
     func checkLoginStatus() {
-        if let email = UserDefaults.standard.string(forKey: userDefaultsKey) {
+        guard let email = UserDefaults.standard.string(forKey: userDefaultsEmailKey),
+              let loginTime = UserDefaults.standard.object(forKey: userDefaultsLoginTimeKey) as? Date else {
+            isLoggedIn = false
+            userEmail = nil
+            return
+        }
+
+        let now = Date()
+        let timeElapsed = now.timeIntervalSince(loginTime)
+
+        if timeElapsed <= sessionExpiryDuration {
             self.userEmail = email
             self.isLoggedIn = true
+        } else {
+            // Session has expired
+            logoutUser()
         }
     }
 }
