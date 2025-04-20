@@ -16,7 +16,7 @@ class SessionManager: ObservableObject {
     
     private let userDefaultsEmailKey = "currentUserEmail"
     private let userDefaultsLoginTimeKey = "currentUserLoginTime"
-    private let sessionExpiryDuration: TimeInterval = 36 // 1 hour
+    private let sessionExpiryDuration: TimeInterval = 60 * 60 * 24 * 30 // 30 days
     
     init(){
         checkLoginStatus()
