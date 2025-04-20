@@ -25,7 +25,7 @@ struct HomeTabView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
 
             CurvedTabBar(selection: $selection)
-                .padding(.bottom, 10)
+                .padding(.bottom, 5)
         }
         // To avoid the keyboard covering the tab bar
         .ignoresSafeArea(.keyboard)

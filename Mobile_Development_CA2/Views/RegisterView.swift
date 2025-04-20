@@ -20,6 +20,8 @@ struct RegisterView: View {
     @State private var alertMessage = ""
     @State private var isSuccess = false
     
+    @EnvironmentObject var session: SessionManager
+    
     var body: some View {
         VStack {
             
@@ -154,9 +156,11 @@ struct RegisterView: View {
                 onCompletion: { result in
                     AuthManager.shared.handleAppleResult(result) { res in
                         switch res {
-                        case .success:
+                        case .success(let authResult):
                             alertMessage = "Login with Apple successful!"
                             isSuccess = true
+                            let email = authResult.user.email ?? "unknown@apple.com"
+                            session.loginUser(email: email)
                         case .failure(let error):
                             alertMessage = error.localizedDescription
                             isSuccess = false
@@ -215,10 +219,10 @@ struct RegisterView: View {
             if let error = error {
                 alertMessage = error.localizedDescription
                 isSuccess = false
-            }else{
+            }else if let user = result?.user {
                 alertMessage = "Registration successful."
                 isSuccess = true
-                // Navigation will be done here
+                session.loginUser(email: user.email ?? "")
             }
             showAlert = true
         }
