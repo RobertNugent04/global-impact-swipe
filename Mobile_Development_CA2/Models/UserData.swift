@@ -10,5 +10,4 @@ import Foundation
 struct UserData: Codable {
     var name: String = ""
     var phoneNumber: String = ""
-    var profileImageUrl: String? = nil
 }
