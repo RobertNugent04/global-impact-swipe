@@ -47,6 +47,7 @@ struct AccountView: View {
 //                        .clipShape(Circle())
 //                        .offset(x: 5, y: 5)
                     
+                    // Show the selected profile image if available
                     if let data = profileImageData, let image = UIImage(data: data) {
                           Image(uiImage: image)
                             .resizable()
