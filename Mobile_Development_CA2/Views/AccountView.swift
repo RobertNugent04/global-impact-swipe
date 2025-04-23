@@ -195,7 +195,7 @@ struct AccountView: View {
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(Color.blue)
+                        .background(Color(hex: "#4CAF50"))
                         .cornerRadius(8)
                 }
                 
