@@ -80,6 +80,8 @@ struct AccountView: View {
                             Task {
                                 if let data = try? await newItem.loadTransferable(type: Data.self) {
                                     profileImageData = data
+                                    //Call helper function to save image locally
+                                    saveImageLocally(data)
                                 }
                             }
                     }
@@ -187,6 +189,12 @@ struct AccountView: View {
         .padding(.bottom, 170)
         .onAppear {
             loadUserData()
+            let url = getProfileImagePath()
+                if FileManager.default.fileExists(atPath: url.path) {
+                    if let data = try? Data(contentsOf: url) {
+                        profileImageData = data
+                    }
+                }
         }
         .alert(isPresented: $showAlert) {
             Alert(
@@ -210,7 +218,6 @@ struct AccountView: View {
                     let data = document.data()
                     userData.name = data?["name"] as? String ?? ""
                     userData.phoneNumber = data?["phoneNumber"] as? String ?? ""
-                    userData.profileImageUrl = data?["profileImageUrl"] as? String
                     if let profileImageUrl = userData.profileImageUrl {
                         //loadProfileImage(from: profileImageUrl)
                     }
@@ -237,7 +244,6 @@ struct AccountView: View {
             db.collection("users").document(uid).setData([
                 "name": userData.name,
                 "phoneNumber": userData.phoneNumber,
-                "profileImageUrl": userData.profileImageUrl ?? ""
             ], merge: true) { error in
                 if let error = error {
                     print("Error saving data: \(error.localizedDescription)")
