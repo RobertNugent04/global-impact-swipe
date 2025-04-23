@@ -140,6 +140,14 @@ struct AccountView: View {
         .onAppear {
             loadUserData()
         }
+        .alert(isPresented: $showAlert) {
+            Alert(
+                title: Text("Save Status"),
+                message: Text(saveMessage),
+                dismissButton: .default(Text("OK"))
+            )
+        }
+
         
     }
     
