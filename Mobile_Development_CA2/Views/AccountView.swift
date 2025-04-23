@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import PhotosUI
 import AuthenticationServices
 import FirebaseAuth
 import FirebaseFirestore
@@ -18,6 +19,10 @@ struct AccountView: View {
     @State private var password: String = "**********"
     @State private var showAlert = false
     @State private var saveMessage: String = ""
+    @State private var selectedItem: PhotosPickerItem?
+    @State private var profileImageData: Data?
+    @State private var profileImageURL: String?
+
     
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
@@ -29,18 +34,55 @@ struct AccountView: View {
                     .foregroundColor(Color(hex: "#333333"))
 
                 ZStack(alignment: .bottomTrailing) {
-                    Image(systemName: "person.circle.fill")
-                        .resizable()
-                        .frame(width: 150, height: 150)
-                        .scaledToFit()
-
-                    Image(systemName: "camera.fill")
-                        .padding(6)
+//                    Image(systemName: "person.circle.fill")
+//                        .resizable()
+//                        .frame(width: 150, height: 150)
+//                        .scaledToFit()
+//
+//                    Image(systemName: "camera.fill")
+//                        .padding(6)
+//                    
+//                        .font(.system(size: 25))
+//                        .background(Color.white)
+//                        .clipShape(Circle())
+//                        .offset(x: 5, y: 5)
                     
-                        .font(.system(size: 25))
-                        .background(Color.white)
-                        .clipShape(Circle())
-                        .offset(x: 5, y: 5)
+                    if let data = profileImageData, let image = UIImage(data: data) {
+                          Image(uiImage: image)
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 150, height: 150)
+                            .clipShape(Circle())
+                    } else {
+                        Image(systemName: "person.circle.fill")
+                            .resizable()
+                            .frame(width: 150, height: 150)
+                            .foregroundColor(.gray)
+                    }
+
+                    //Some code for PhotosPicker taken from the following sources:
+                    //https://developer.apple.com/documentation/photokit/bringing-photos-picker-to-your-swiftui-app
+                    //https://stackoverflow.com/questions/57110290/how-to-pick-image-from-gallery-in-swiftui
+                    PhotosPicker(
+                        selection: $selectedItem,
+                        matching: .images,
+                        photoLibrary: .shared()) {
+                            Image(systemName: "camera.fill")
+                                .padding(6)
+                                .font(.system(size: 25))
+                                .background(Color.white)
+                                .clipShape(Circle())
+                                .offset(x: 5, y: 5)
+                    }
+                    .onChange(of: selectedItem) {
+                        guard let newItem = selectedItem else { return }
+
+                        Task {
+                            if let data = try? await newItem.loadTransferable(type: Data.self) {
+                                profileImageData = data
+                            }
+                        }
+                    }
                 }
                 .frame(width: 150, height: 150)
             }
@@ -48,7 +90,7 @@ struct AccountView: View {
 
 
             
-            // E-mail Title and Field
+            // Name Title and Field
             Text("Name")
                 .font(.headline)
                 .foregroundColor(.black)
@@ -77,7 +119,7 @@ struct AccountView: View {
                 .frame(maxWidth: .infinity)
                 
 
-            // Password Title and Field
+            // Phone number Title and Field
             Text("Phone Number")
                 .font(.headline)
                 .foregroundColor(.black)
@@ -90,6 +132,7 @@ struct AccountView: View {
                 .frame(width: 330)
                 .frame(maxWidth: .infinity)
 
+            //Password Title and Field
             Text("Password")
                 .font(.headline)
                 .foregroundColor(.black)
@@ -147,7 +190,6 @@ struct AccountView: View {
                 dismissButton: .default(Text("OK"))
             )
         }
-
         
     }
     
