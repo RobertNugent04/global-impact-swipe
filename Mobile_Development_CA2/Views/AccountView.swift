@@ -16,6 +16,8 @@ struct AccountView: View {
     @State private var email: String = "user@example.com"
     @State private var phoneNumber: String = "+353851233456"
     @State private var password: String = "**********"
+    @State private var showAlert = false
+    @State private var saveMessage: String = ""
     
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
@@ -104,7 +106,7 @@ struct AccountView: View {
             HStack(spacing: 20) {
                 Button(action: {
                     // Save Changes
-                    // Example: saveUserData()
+                    saveUserData()
                 }) {
                     Text("Save Changes")
                         .foregroundColor(.white)
@@ -158,6 +160,26 @@ struct AccountView: View {
             }
         }
     }
+    
+    //Reference for following code: https://stackoverflow.com/questions/64652736/how-do-i-add-data-to-current-users-uid-in-firestore-swift-ios
+    func saveUserData() {
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+
+        let db = Firestore.firestore()
+        db.collection("users").document(uid).setData([
+            "name": name,
+            "phoneNumber": phoneNumber
+        ], merge: true) { error in
+            if let error = error {
+                print("Error saving data: \(error.localizedDescription)")
+                saveMessage = "Failed to save changes."
+            } else {
+                saveMessage = "Changes saved successfully!"
+            }
+            showAlert = true
+        }
+    }
+
     
 }
 
