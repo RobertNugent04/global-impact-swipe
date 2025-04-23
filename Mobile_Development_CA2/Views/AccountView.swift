@@ -33,6 +33,7 @@ struct AccountView: View {
 
                     Image(systemName: "camera.fill")
                         .padding(6)
+                    
                         .font(.system(size: 25))
                         .background(Color.white)
                         .clipShape(Circle())
@@ -106,11 +107,22 @@ struct AccountView: View {
         .padding()
         .padding(.top, 130)
         .padding(.bottom, 170)
+        .onAppear {
+            loadUserData()
+        }
         
     }
     
-}
+    func loadUserData() {
+        if let user = Auth.auth().currentUser {
+            email = user.email ?? "No email"
+            //Password placeholder 
+            password = "********"
 
+        }
+    }
+    
+}
 
 #Preview {
     AccountView()
