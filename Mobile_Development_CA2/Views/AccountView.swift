@@ -20,7 +20,6 @@ struct AccountView: View {
     @State private var saveMessage: String = ""
     @State private var selectedItem: PhotosPickerItem?
     @State private var profileImageData: Data?
-    @State private var profileImageURL: String?
     @State private var userData = UserData()
     
     var body: some View {
@@ -78,10 +77,10 @@ struct AccountView: View {
                             guard let newItem = selectedItem else { return }
 
                             Task {
-                                if let data = try? await newItem.loadTransferable(type: Data.self) {
+                                if let data = try? await newItem.loadTransferable(type: Data.self),
+                                   let uid = Auth.auth().currentUser?.uid {
                                     profileImageData = data
-                                    //Call helper function to save image locally
-                                    saveImageLocally(data)
+                                    saveImageLocally(data, uid: uid)
                                 }
                             }
                     }
@@ -151,11 +150,6 @@ struct AccountView: View {
             HStack(spacing: 20) {
                 Button(action: {
                     // Save Changes
-                    guard profileImageData != nil else {
-                            saveMessage = "Please wait for the image to finish loading."
-                            showAlert = true
-                            return
-                        }
                     saveUserData()
                 }) {
                     Text("Save Changes")
@@ -189,12 +183,14 @@ struct AccountView: View {
         .padding(.bottom, 170)
         .onAppear {
             loadUserData()
-            let url = getProfileImagePath()
-                if FileManager.default.fileExists(atPath: url.path) {
-                    if let data = try? Data(contentsOf: url) {
+            
+            if let uid = Auth.auth().currentUser?.uid {
+                let url = getProfileImagePath(for: uid)
+                if FileManager.default.fileExists(atPath: url.path),
+                    let data = try? Data(contentsOf: url) {
                         profileImageData = data
-                    }
                 }
+            }
         }
         .alert(isPresented: $showAlert) {
             Alert(
@@ -218,9 +214,9 @@ struct AccountView: View {
                     let data = document.data()
                     userData.name = data?["name"] as? String ?? ""
                     userData.phoneNumber = data?["phoneNumber"] as? String ?? ""
-                    if let profileImageUrl = userData.profileImageUrl {
-                        //loadProfileImage(from: profileImageUrl)
-                    }
+//                    if let profileImageUrl = userData.profileImageUrl {
+//                        //loadProfileImage(from: profileImageUrl)
+//                    }
                 }
             }
         }
