@@ -223,13 +223,15 @@ struct AccountView: View {
     func saveUserData() {
         guard let uid = Auth.auth().currentUser?.uid else { return }
         
-        uploadProfileImage { imageUrl in
-            guard let imageUrl = imageUrl else {
-                print("Image URL is nil after upload.")
-                saveMessage = "Failed to upload image."
-                showAlert = true
-                return
-            }
+//        uploadProfileImage { imageUrl in
+//            guard let imageUrl = imageUrl else {
+//                print("Image URL is nil after upload.")
+//                saveMessage = "Failed to upload image."
+//                showAlert = true
+//                return
+//            }
+            
+            userData.profileImageUrl = imageUrl
             
             let db = Firestore.firestore()
             db.collection("users").document(uid).setData([
@@ -274,48 +276,7 @@ struct AccountView: View {
         }
     }
     
-    func uploadProfileImage(completion: @escaping (String?) -> Void) {
-        guard let uid = Auth.auth().currentUser?.uid else {
-            completion(nil)
-            return
-        }
-
-        // Ensure we have image data
-        guard let imageData = profileImageData else {
-            print("No profile image data to upload.")
-            completion(nil)
-            return
-        }
-
-        // Create a reference to Firebase Storage with a unique path
-        let storageRef = Storage.storage().reference().child("profile_images/\(uid).jpg")
-
-        // Upload the image data
-        storageRef.putData(imageData, metadata: nil) { metadata, error in
-            if let error = error {
-                print("Upload failed: \(error.localizedDescription)")
-                completion(nil)
-                return
-            }
-
-            // Get the download URL
-            storageRef.downloadURL { url, error in
-                if let error = error {
-                    print("Failed to get download URL: \(error.localizedDescription)")
-                    completion(nil)
-                    return
-                }
-
-                // Return the download URL as a string
-                if let downloadURL = url?.absoluteString {
-                    completion(downloadURL)
-                } else {
-                    completion(nil)
-                }
-            }
-        }
-    }
-
+ 
 
     
 }
