@@ -77,63 +77,114 @@ struct AccountView: View {
             }
             .frame(maxWidth: .infinity)
             
+                // Name Title and Field
+                Text("Name")
+                    .font(.headline)
+                    .foregroundColor(.black)
+                    .padding(.leading, 22)
+                
+            ZStack{
             
+                TextField("Enter your name", text: $userData.name)
+                    .font(Font.system(size: 20))
+                    .padding(9)
+                    .background(RoundedRectangle(cornerRadius: 8).fill(Color.white))
+                    .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 1))
+                    .frame(width: 330)
+                    .frame(maxWidth: .infinity)
+                
+                HStack {
+                    Spacer()
+                    Image(systemName: "pencil.circle.fill")
+                        .resizable()
+                        .frame(width: 24, height: 24)
+                        .foregroundColor(.gray)
+                        .padding(.trailing, 25)
+                }
+                
+            }
+                
+                // E-mail Title and Field
+                Text("E-mail")
+                    .font(.headline)
+                    .foregroundColor(.black)
+                    .padding(.leading, 22)
+                
+            ZStack{
             
-            // Name Title and Field
-            Text("Name")
-                .font(.headline)
-                .foregroundColor(.black)
-                .padding(.leading, 22)
-            
-            TextField("Enter your name", text: $userData.name)
-                .font(Font.system(size: 20))
-                .padding(9)
-                .background(RoundedRectangle(cornerRadius: 8).fill(Color.white))
-                .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 1))
-                .frame(width: 330)
-                .frame(maxWidth: .infinity)
-            
-            
-            // E-mail Title and Field
-            Text("E-mail")
-                .font(.headline)
-                .foregroundColor(.black)
-                .padding(.leading, 22)
-            TextField("Enter your e-mail", text: $email)
-                .font(Font.system(size: 20))
-                .padding(9)
-                .background(RoundedRectangle(cornerRadius: 8).fill(Color.white))
-                .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 1))
-                .frame(width: 330)
-                .frame(maxWidth: .infinity)
-            
+                TextField("Enter your e-mail", text: $email)
+                    .font(Font.system(size: 20))
+                    .padding(9)
+                    .background(RoundedRectangle(cornerRadius: 8).fill(Color.white))
+                    .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 1))
+                    .frame(width: 330)
+                    .frame(maxWidth: .infinity)
+                    .disabled(true)
+                
+                HStack {
+                    Spacer()
+                    Image(systemName: "lock.circle.fill")
+                        .resizable()
+                        .frame(width: 24, height: 24)
+                        .foregroundColor(.gray)
+                        .padding(.trailing, 25)
+                }
+                    
+            }
             
             // Phone number Title and Field
             Text("Phone Number")
                 .font(.headline)
                 .foregroundColor(.black)
                 .padding(.leading, 22)
-            TextField("Enter your phone number", text: $userData.phoneNumber)
-                .font(Font.system(size: 20))
-                .padding(9)
-                .background(RoundedRectangle(cornerRadius: 8).fill(Color.white))
-                .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 1))
-                .frame(width: 330)
-                .frame(maxWidth: .infinity)
+            
+            ZStack{
+                
+                TextField("Enter your phone number", text: $userData.phoneNumber)
+                    .font(Font.system(size: 20))
+                    .padding(9)
+                    .background(RoundedRectangle(cornerRadius: 8).fill(Color.white))
+                    .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 1))
+                    .frame(width: 330)
+                    .frame(maxWidth: .infinity)
+             
+                HStack {
+                    Spacer()
+                    Image(systemName: "pencil.circle.fill")
+                        .resizable()
+                        .frame(width: 24, height: 24)
+                        .foregroundColor(.gray)
+                        .padding(.trailing, 25)
+                }
+            }
             
             //Password Title and Field
             Text("Password")
                 .font(.headline)
                 .foregroundColor(.black)
                 .padding(.leading, 22)
-            SecureField("", text: $password)
-                .font(Font.system(size: 20))
-                .padding(9)
-                .background(RoundedRectangle(cornerRadius: 8).fill(Color.white))
-                .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 1))
-                .frame(width: 330)
-                .disabled(true)
-                .frame(maxWidth: .infinity)
+            
+            ZStack{
+                
+                SecureField("", text: $password)
+                    .font(Font.system(size: 20))
+                    .padding(9)
+                    .background(RoundedRectangle(cornerRadius: 8).fill(Color.white))
+                    .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 1))
+                    .frame(width: 330)
+                    .disabled(true)
+                    .frame(maxWidth: .infinity)
+             
+                HStack {
+                    Spacer()
+                    Image(systemName: "lock.circle.fill")
+                        .resizable()
+                        .frame(width: 24, height: 24)
+                        .foregroundColor(.gray)
+                        .padding(.trailing, 25)
+                }
+                
+            }
             
             HStack(spacing: 20) {
                 Button(action: {
