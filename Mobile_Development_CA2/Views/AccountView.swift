@@ -74,14 +74,14 @@ struct AccountView: View {
                                 .clipShape(Circle())
                                 .offset(x: 5, y: 5)
                     }
-                    .onChange(of: selectedItem) {
-                        guard let newItem = selectedItem else { return }
+                        .onChange(of: selectedItem) {
+                            guard let newItem = selectedItem else { return }
 
-                        Task {
-                            if let data = try? await newItem.loadTransferable(type: Data.self) {
-                                profileImageData = data
+                            Task {
+                                if let data = try? await newItem.loadTransferable(type: Data.self) {
+                                    profileImageData = data
+                                }
                             }
-                        }
                     }
                 }
                 .frame(width: 150, height: 150)
@@ -149,6 +149,11 @@ struct AccountView: View {
             HStack(spacing: 20) {
                 Button(action: {
                     // Save Changes
+                    guard profileImageData != nil else {
+                            saveMessage = "Please wait for the image to finish loading."
+                            showAlert = true
+                            return
+                        }
                     saveUserData()
                 }) {
                     Text("Save Changes")
@@ -217,24 +222,33 @@ struct AccountView: View {
     //Reference for following code: https://stackoverflow.com/questions/64652736/how-do-i-add-data-to-current-users-uid-in-firestore-swift-ios
     func saveUserData() {
         guard let uid = Auth.auth().currentUser?.uid else { return }
-
-        let db = Firestore.firestore()
-        db.collection("users").document(uid).setData([
-            "name": userData.name,
-            "phoneNumber": userData.phoneNumber,
-            "profileImageUrl": userData.profileImageUrl ?? ""
-        ], merge: true) { error in
-            if let error = error {
-                print("Error saving data: \(error.localizedDescription)")
-                saveMessage = "Failed to save changes."
-            } else {
-                saveMessage = "Changes saved successfully!"
+        
+        uploadProfileImage { imageUrl in
+            guard let imageUrl = imageUrl else {
+                print("Image URL is nil after upload.")
+                saveMessage = "Failed to upload image."
+                showAlert = true
+                return
             }
-            showAlert = true
+            
+            let db = Firestore.firestore()
+            db.collection("users").document(uid).setData([
+                "name": userData.name,
+                "phoneNumber": userData.phoneNumber,
+                "profileImageUrl": userData.profileImageUrl ?? ""
+            ], merge: true) { error in
+                if let error = error {
+                    print("Error saving data: \(error.localizedDescription)")
+                    saveMessage = "Failed to save changes."
+                } else {
+                    saveMessage = "Changes saved successfully!"
+                }
+                showAlert = true
+            }
         }
     }
     
-    //References for following code:
+    //References for following function:
     //https://firebase.google.com/docs/storage/ios/download-files
     //https://stackoverflow.com/questions/55201668/how-to-retrieve-image-from-firebase-storage-swift-4-ios
     func loadProfileImage(from urlString: String) {
@@ -248,7 +262,7 @@ struct AccountView: View {
         let storageRef = Storage.storage().reference(forURL: url.absoluteString)
         
         // Download the data from Firebase Storage
-        storageRef.getData(maxSize: 10 * 1024 * 1024) { data, error in
+        storageRef.getData(maxSize: Int64(10 * 1024 * 1024)) { data, error in
             if let error = error {
                 print("Error loading image from Firebase Storage: \(error.localizedDescription)")
             } else {
@@ -259,6 +273,49 @@ struct AccountView: View {
             }
         }
     }
+    
+    func uploadProfileImage(completion: @escaping (String?) -> Void) {
+        guard let uid = Auth.auth().currentUser?.uid else {
+            completion(nil)
+            return
+        }
+
+        // Ensure we have image data
+        guard let imageData = profileImageData else {
+            print("No profile image data to upload.")
+            completion(nil)
+            return
+        }
+
+        // Create a reference to Firebase Storage with a unique path
+        let storageRef = Storage.storage().reference().child("profile_images/\(uid).jpg")
+
+        // Upload the image data
+        storageRef.putData(imageData, metadata: nil) { metadata, error in
+            if let error = error {
+                print("Upload failed: \(error.localizedDescription)")
+                completion(nil)
+                return
+            }
+
+            // Get the download URL
+            storageRef.downloadURL { url, error in
+                if let error = error {
+                    print("Failed to get download URL: \(error.localizedDescription)")
+                    completion(nil)
+                    return
+                }
+
+                // Return the download URL as a string
+                if let downloadURL = url?.absoluteString {
+                    completion(downloadURL)
+                } else {
+                    completion(nil)
+                }
+            }
+        }
+    }
+
 
     
 }
