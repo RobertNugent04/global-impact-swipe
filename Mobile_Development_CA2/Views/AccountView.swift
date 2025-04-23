@@ -145,6 +145,17 @@ struct AccountView: View {
         if let user = Auth.auth().currentUser {
             email = user.email ?? "No email"
 
+            let uid = user.uid
+            let db = Firestore.firestore()
+
+            db.collection("users").document(uid).getDocument { document, error in
+                if let document = document, document.exists {
+                    let data = document.data()
+                    name = data?["name"] as? String ?? ""
+                    phoneNumber = data?["phoneNumber"] as? String ?? ""
+                    
+                }
+            }
         }
     }
     
