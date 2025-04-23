@@ -13,16 +13,14 @@ import FirebaseFirestore
 
 struct AccountView: View {
     // Hardcoded values for email, password, and confirm password
-    @State private var name: String = ""
     @State private var email: String = "user@example.com"
-    @State private var phoneNumber: String = "+353851233456"
     @State private var password: String = "**********"
     @State private var showAlert = false
     @State private var saveMessage: String = ""
     @State private var selectedItem: PhotosPickerItem?
     @State private var profileImageData: Data?
     @State private var profileImageURL: String?
-
+    @State private var userData = UserData()
     
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
@@ -97,7 +95,7 @@ struct AccountView: View {
                 .foregroundColor(.black)
                 .padding(.leading, 22)
    
-            TextField("Enter your name", text: $name)
+            TextField("Enter your name", text: $userData.name)
                 .font(Font.system(size: 20))
                 .padding(9)
                 .background(RoundedRectangle(cornerRadius: 8).fill(Color.white))
@@ -125,7 +123,7 @@ struct AccountView: View {
                 .font(.headline)
                 .foregroundColor(.black)
                 .padding(.leading, 22)
-            TextField("Enter your phone number", text: $phoneNumber)
+            TextField("Enter your phone number", text: $userData.phoneNumber)
                 .font(Font.system(size: 20))
                 .padding(9)
                 .background(RoundedRectangle(cornerRadius: 8).fill(Color.white))
@@ -197,16 +195,16 @@ struct AccountView: View {
     func loadUserData() {
         if let user = Auth.auth().currentUser {
             email = user.email ?? "No email"
-
+            
             let uid = user.uid
             let db = Firestore.firestore()
 
             db.collection("users").document(uid).getDocument { document, error in
                 if let document = document, document.exists {
                     let data = document.data()
-                    name = data?["name"] as? String ?? ""
-                    phoneNumber = data?["phoneNumber"] as? String ?? ""
-                    
+                    userData.name = data?["name"] as? String ?? ""
+                    userData.phoneNumber = data?["phoneNumber"] as? String ?? ""
+                    userData.profileImageUrl = data?["profileImageUrl"] as? String
                 }
             }
         }
@@ -218,8 +216,9 @@ struct AccountView: View {
 
         let db = Firestore.firestore()
         db.collection("users").document(uid).setData([
-            "name": name,
-            "phoneNumber": phoneNumber
+            "name": userData.name,
+            "phoneNumber": userData.phoneNumber,
+            "profileImageUrl": userData.profileImageUrl ?? ""
         ], merge: true) { error in
             if let error = error {
                 print("Error saving data: \(error.localizedDescription)")
