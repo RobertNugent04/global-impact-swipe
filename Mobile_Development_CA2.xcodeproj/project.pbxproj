@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		3FA388842D9FEE5D00721CB6 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 3FA388832D9FEE5D00721CB6 /* FirebaseAuth */; };
 		3FA388862D9FEE5D00721CB6 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 3FA388852D9FEE5D00721CB6 /* FirebaseFirestore */; };
+		3FC00AD52DB908BD00F0D90A /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 3FC00AD42DB908BD00F0D90A /* FirebaseStorage */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -72,6 +73,7 @@
 			files = (
 				3FA388842D9FEE5D00721CB6 /* FirebaseAuth in Frameworks */,
 				3FA388862D9FEE5D00721CB6 /* FirebaseFirestore in Frameworks */,
+				3FC00AD52DB908BD00F0D90A /* FirebaseStorage in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -134,6 +136,7 @@
 			packageProductDependencies = (
 				3FA388832D9FEE5D00721CB6 /* FirebaseAuth */,
 				3FA388852D9FEE5D00721CB6 /* FirebaseFirestore */,
+				3FC00AD42DB908BD00F0D90A /* FirebaseStorage */,
 			);
 			productName = Mobile_Development_CA2;
 			productReference = 3F45620C2D7EEA2B008CCBB4 /* Mobile_Development_CA2.app */;
@@ -427,6 +430,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "The app needs access to your location to provide location-based services.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "We need access to your photo library to set a profile picture.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -460,6 +464,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "The app needs access to your location to provide location-based services.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "We need access to your photo library to set a profile picture.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -609,6 +614,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 3FA388822D9FEE5D00721CB6 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseFirestore;
+		};
+		3FC00AD42DB908BD00F0D90A /* FirebaseStorage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3FA388822D9FEE5D00721CB6 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseStorage;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
