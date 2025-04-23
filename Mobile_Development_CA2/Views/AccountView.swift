@@ -10,6 +10,7 @@ import PhotosUI
 import AuthenticationServices
 import FirebaseAuth
 import FirebaseFirestore
+import FirebaseStorage
 
 struct AccountView: View {
     // Hardcoded values for email, password, and confirm password
@@ -205,6 +206,9 @@ struct AccountView: View {
                     userData.name = data?["name"] as? String ?? ""
                     userData.phoneNumber = data?["phoneNumber"] as? String ?? ""
                     userData.profileImageUrl = data?["profileImageUrl"] as? String
+                    if let profileImageUrl = userData.profileImageUrl {
+                        loadProfileImage(from: profileImageUrl)
+                    }
                 }
             }
         }
@@ -227,6 +231,32 @@ struct AccountView: View {
                 saveMessage = "Changes saved successfully!"
             }
             showAlert = true
+        }
+    }
+    
+    //References for following code:
+    //https://firebase.google.com/docs/storage/ios/download-files
+    //https://stackoverflow.com/questions/55201668/how-to-retrieve-image-from-firebase-storage-swift-4-ios
+    func loadProfileImage(from urlString: String) {
+        // Convert the string URL to a valid URL
+        guard let url = URL(string: urlString) else {
+            print("Invalid URL string")
+            return
+        }
+
+        // Create a reference to Firebase Storage
+        let storageRef = Storage.storage().reference(forURL: url.absoluteString)
+        
+        // Download the data from Firebase Storage
+        storageRef.getData(maxSize: 10 * 1024 * 1024) { data, error in
+            if let error = error {
+                print("Error loading image from Firebase Storage: \(error.localizedDescription)")
+            } else {
+                // Successfully loaded image data
+                if let imageData = data {
+                    profileImageData = imageData
+                }
+            }
         }
     }
 
