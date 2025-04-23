@@ -30,24 +30,12 @@ struct AccountView: View {
                     .font(.title)
                     .fontWeight(.bold)
                     .foregroundColor(Color(hex: "#333333"))
-
+                
                 ZStack(alignment: .bottomTrailing) {
-//                    Image(systemName: "person.circle.fill")
-//                        .resizable()
-//                        .frame(width: 150, height: 150)
-//                        .scaledToFit()
-//
-//                    Image(systemName: "camera.fill")
-//                        .padding(6)
-//                    
-//                        .font(.system(size: 25))
-//                        .background(Color.white)
-//                        .clipShape(Circle())
-//                        .offset(x: 5, y: 5)
                     
                     // Show the selected profile image if available
                     if let data = profileImageData, let image = UIImage(data: data) {
-                          Image(uiImage: image)
+                        Image(uiImage: image)
                             .resizable()
                             .scaledToFill()
                             .frame(width: 150, height: 150)
@@ -58,7 +46,7 @@ struct AccountView: View {
                             .frame(width: 150, height: 150)
                             .foregroundColor(.gray)
                     }
-
+                    
                     //Some code for PhotosPicker taken from the following sources:
                     //https://developer.apple.com/documentation/photokit/bringing-photos-picker-to-your-swiftui-app
                     //https://stackoverflow.com/questions/57110290/how-to-pick-image-from-gallery-in-swiftui
@@ -72,10 +60,10 @@ struct AccountView: View {
                                 .background(Color.white)
                                 .clipShape(Circle())
                                 .offset(x: 5, y: 5)
-                    }
+                        }
                         .onChange(of: selectedItem) {
                             guard let newItem = selectedItem else { return }
-
+                            
                             Task {
                                 if let data = try? await newItem.loadTransferable(type: Data.self),
                                    let uid = Auth.auth().currentUser?.uid {
@@ -83,20 +71,20 @@ struct AccountView: View {
                                     saveImageLocally(data, uid: uid)
                                 }
                             }
-                    }
+                        }
                 }
                 .frame(width: 150, height: 150)
             }
             .frame(maxWidth: .infinity)
-
-
+            
+            
             
             // Name Title and Field
             Text("Name")
                 .font(.headline)
                 .foregroundColor(.black)
                 .padding(.leading, 22)
-   
+            
             TextField("Enter your name", text: $userData.name)
                 .font(Font.system(size: 20))
                 .padding(9)
@@ -118,8 +106,8 @@ struct AccountView: View {
                 .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 1))
                 .frame(width: 330)
                 .frame(maxWidth: .infinity)
-                
-
+            
+            
             // Phone number Title and Field
             Text("Phone Number")
                 .font(.headline)
@@ -132,7 +120,7 @@ struct AccountView: View {
                 .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 1))
                 .frame(width: 330)
                 .frame(maxWidth: .infinity)
-
+            
             //Password Title and Field
             Text("Password")
                 .font(.headline)
@@ -159,7 +147,7 @@ struct AccountView: View {
                         .background(Color.blue)
                         .cornerRadius(8)
                 }
-
+                
                 Button(action: {
                     // Cancel Changes
                     loadUserData()
@@ -175,8 +163,8 @@ struct AccountView: View {
             .frame(width: 330)
             .padding(.top, 10)
             .padding(.leading, 22)
-
-     
+            
+            
         }
         .padding()
         .padding(.top, 130)
@@ -187,8 +175,8 @@ struct AccountView: View {
             if let uid = Auth.auth().currentUser?.uid {
                 let url = getProfileImagePath(for: uid)
                 if FileManager.default.fileExists(atPath: url.path),
-                    let data = try? Data(contentsOf: url) {
-                        profileImageData = data
+                   let data = try? Data(contentsOf: url) {
+                    profileImageData = data
                 }
             }
         }
@@ -203,54 +191,21 @@ struct AccountView: View {
     }
     
     func loadUserData() {
-        if let user = Auth.auth().currentUser {
-            email = user.email ?? "No email"
-            
-            let uid = user.uid
-            let db = Firestore.firestore()
-
-            db.collection("users").document(uid).getDocument { document, error in
-                if let document = document, document.exists {
-                    let data = document.data()
-                    userData.name = data?["name"] as? String ?? ""
-                    userData.phoneNumber = data?["phoneNumber"] as? String ?? ""
-//                    if let profileImageUrl = userData.profileImageUrl {
-//                        //loadProfileImage(from: profileImageUrl)
-//                    }
-                }
-            }
-        }
+        FirebaseUserHelper.loadUserData(
+            email: { email = $0 },
+            updateUserData: { userData = $0 }
+        )
     }
     
-    //Reference for following code: https://stackoverflow.com/questions/64652736/how-do-i-add-data-to-current-users-uid-in-firestore-swift-ios
     func saveUserData() {
-        guard let uid = Auth.auth().currentUser?.uid else { return }
-        
-//        uploadProfileImage { imageUrl in
-//            guard let imageUrl = imageUrl else {
-//                print("Image URL is nil after upload.")
-//                saveMessage = "Failed to upload image."
-//                showAlert = true
-//                return
-//            }
-            
-            //userData.profileImageUrl = imageUrl
-            
-            let db = Firestore.firestore()
-            db.collection("users").document(uid).setData([
-                "name": userData.name,
-                "phoneNumber": userData.phoneNumber,
-            ], merge: true) { error in
-                if let error = error {
-                    print("Error saving data: \(error.localizedDescription)")
-                    saveMessage = "Failed to save changes."
-                } else {
-                    saveMessage = "Changes saved successfully!"
-                }
-                showAlert = true
-            }
+        FirebaseUserHelper.saveUserData(
+            userData: userData
+        ) { success, message in
+            saveMessage = message
+            showAlert = true
         }
     }
+}
     
     //References for following function (load image from Firebase Storage):
     //https://firebase.google.com/docs/storage/ios/download-files
