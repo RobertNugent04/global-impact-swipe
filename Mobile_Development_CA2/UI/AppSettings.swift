@@ -9,6 +9,6 @@ import Foundation
 import SwiftUI
 
 @Observable
-final class AppSettings {
+final class AppSettings: ObservableObject {
     var useDarkMode = false
 }
