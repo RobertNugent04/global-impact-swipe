@@ -9,7 +9,11 @@ import SwiftUI
 
 struct HomeView: View {
     @EnvironmentObject private var locationStore: LocationStore
+    @EnvironmentObject private var settings     : AppSettings
+    @EnvironmentObject private var session      : SessionManager
+    
     @State private var showSetLocation = false
+    @State private var showMenu = false
     
     private var buttonTitle: String{
         locationStore.selectedAddress ?? "Set Location"
@@ -28,6 +32,9 @@ struct HomeView: View {
                         Text(buttonTitle)
                             .foregroundColor(.white)
                             .fontWeight(.medium)
+                            .lineLimit(1)
+                            .truncationMode(.tail)
+                            .frame(maxWidth: 180, alignment: .leading)
                     }
                     .padding(.horizontal, 15)
                     .padding(.vertical, 8)
@@ -36,6 +43,28 @@ struct HomeView: View {
                 }
                 
                 Spacer()
+                
+                //Avatar and pop over menu
+                Button{showMenu.toggle()} label: {
+                    Image(systemName: "person.fill")
+                        .resizable()
+                        .frame(width: 36, height: 36)
+                        .clipShape(Circle())
+                }
+                .padding(8)
+                .background(Color.white)
+                .clipShape(Circle())
+                .shadow(color: .black.opacity(0.45), radius: 4, y: 2)
+                .overlay(alignment: .topTrailing) {
+                    if showMenu {
+                        ProfileMenu()
+                            .environmentObject(settings)
+                            .environmentObject(session)
+                            .offset(y: 50)
+                            .transition(.opacity.combined(with: .move(edge: .top)))
+                    }
+                }
+                
             }
             .padding(.top, 2)
             .padding(.horizontal, 20)
@@ -46,6 +75,8 @@ struct HomeView: View {
         .navigationDestination(isPresented: $showSetLocation) {
             SetLocationView()
         }
+        .preferredColorScheme(settings.useDarkMode ? .dark : nil)
+        .onTapGesture { if showMenu { showMenu = false } }
     }
 }
 
@@ -53,4 +84,6 @@ struct HomeView: View {
 #Preview {
     HomeView()
         .environmentObject(LocationStore())
+        .environmentObject(AppSettings())
+        .environmentObject(SessionManager.shared)
 }

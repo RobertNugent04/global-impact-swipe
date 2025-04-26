@@ -13,6 +13,7 @@ import SwiftData
 @main
 struct Mobile_Development_CA2App: App {
     @StateObject var session = SessionManager.shared
+    @StateObject private var settings = AppSettings()
     
     private let container: ModelContainer = {
         let schema = Schema([UserLocation.self])
@@ -32,6 +33,7 @@ struct Mobile_Development_CA2App: App {
             RootView()
                 .environmentObject(session)
                 .environmentObject(locationStore)
+                .environmentObject(settings)
                 .modelContainer(container)
         }
     }
