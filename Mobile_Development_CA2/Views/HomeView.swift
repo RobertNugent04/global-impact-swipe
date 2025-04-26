@@ -8,19 +8,24 @@
 import SwiftUI
 
 struct HomeView: View {
+    @EnvironmentObject private var locationStore: LocationStore
+    @State private var showSetLocation = false
+    
+    private var buttonTitle: String{
+        locationStore.selectedAddress ?? "Set Location"
+    }
+    
     var body: some View {
         VStack(alignment: .leading) {
             HStack {
-                Button(action: {
-                    // i will add the action here
-                }) {
+                Button { showSetLocation = true } label:{
                     HStack(spacing: 10) {
                         Image(systemName: "location.fill")
                             .foregroundColor(Color(hex: "#4CAF50"))
                             .padding(8)
                             .background(Circle().fill(Color.white))
 
-                        Text("Set Location")
+                        Text(buttonTitle)
                             .foregroundColor(.white)
                             .fontWeight(.medium)
                     }
@@ -38,11 +43,14 @@ struct HomeView: View {
             Spacer()
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+        .navigationDestination(isPresented: $showSetLocation) {
+            SetLocationView()
+        }
     }
 }
 
 
-
 #Preview {
     HomeView()
+        .environmentObject(LocationStore())
 }
