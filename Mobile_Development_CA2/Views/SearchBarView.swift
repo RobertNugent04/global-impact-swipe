@@ -14,15 +14,15 @@ struct SearchBarView: View {
         HStack {
             TextField("Search for a location", text: $text)
                 .padding(.leading, 40)
-                .padding(.vertical, 20)
+                .padding(.vertical, 15)
                 .background(Color(.white))
                 .cornerRadius(10)
-                .padding(.horizontal, 16)
+                .padding(.horizontal, 30)
                 .overlay(
                     HStack {
                         Image(systemName: "magnifyingglass")
                             .foregroundColor(.gray)
-                            .padding(.leading, 25)
+                            .padding(.leading, 37)
                         Spacer()
                     }
                 )
