@@ -57,6 +57,20 @@ struct ProjectDetailView: View {
                     }
                     .padding(.horizontal)
                     
+                    // Description and the SDGs
+                    VStack(alignment:.leading, spacing:12) {
+                        Text(project.description)
+                        HStack(spacing:12) {
+                            Image("sdg\(project.sdgPrimary)")
+                                .resizable().frame(width:42,height:48)
+                            ForEach(project.sdgSecondary, id:\.self) {
+                                Image("sdg\($0)")
+                                    .resizable().frame(width:30,height:36)
+                            }
+                        }
+                    }
+                    .padding(.horizontal)
+                    
                 }
             }
             
