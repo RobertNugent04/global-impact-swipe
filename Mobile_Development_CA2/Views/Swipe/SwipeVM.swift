@@ -7,6 +7,7 @@
 
 import Foundation
 import Combine
+import SwiftData
 
 @MainActor
 final class SwipeVM: ObservableObject {
@@ -36,9 +37,9 @@ final class SwipeVM: ObservableObject {
     }
 
     // toggle like / unlike on backend
-    static func setLike(_ like: Bool, for proj: ProjectDTO, email: String) {
+    static func setLike(_ like: Bool, for project: ProjectDTO, email: String) {
         guard let url = URL(string:
-            "http://localhost:4000/projects/\(proj.id)/\(like ? "like" : "unlike")"
+            "http://localhost:4000/projects/\(project.id)/\(like ? "like" : "unlike")"
         ) else { return }
 
         var req = URLRequest(url: url)
@@ -46,7 +47,20 @@ final class SwipeVM: ObservableObject {
         req.setValue("application/json", forHTTPHeaderField: "Content-Type")
         req.httpBody = try? JSONEncoder().encode(["email": email])
 
-        URLSession.shared.dataTask(with: req).resume()
+        URLSession.shared.dataTask(with: req) { _, _, _ in
+            
+            // After request finishes, schedule notification if the project was liked
+            if like {
+                if let container = try? ModelContainer(for: AppNotification.self) {
+                    let ctx = ModelContext(container)
+                    Task {
+                        await NotificationManager.shared.scheduleLike(
+                            for: project,
+                            context: ctx
+                        )
+                    }
+                }
+            }
+        }.resume()
     }
-    
 }
