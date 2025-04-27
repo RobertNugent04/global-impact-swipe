@@ -7,11 +7,22 @@
 
 import SwiftUI
 import Firebase
-
+import SwiftData
 
 
 @main
 struct Mobile_Development_CA2App: App {
+    @StateObject var session = SessionManager.shared
+    @StateObject private var settings = AppSettings()
+    
+    private let container: ModelContainer = {
+        let schema = Schema([UserLocation.self])
+        return try! ModelContainer(for: schema)
+    }()
+
+    private var locationStore: LocationStore {
+        LocationStore(context: container.mainContext)
+    }
     
     init() {
         FirebaseApp.configure()
@@ -20,6 +31,10 @@ struct Mobile_Development_CA2App: App {
     var body: some Scene {
         WindowGroup {
             RootView()
+                .environmentObject(session)
+                .environmentObject(locationStore)
+                .environmentObject(settings)
+                .modelContainer(container)
         }
     }
 }

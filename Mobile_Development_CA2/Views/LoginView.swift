@@ -12,22 +12,16 @@ import FirebaseAuth
 struct LoginView: View {
     @State private var email: String = ""
     @State private var password: String = ""
-    @State private var userIsLoggedIn = false
     @State private var isPasswordVisible = false
     @State private var showAlert = false
     @State private var alertMessage = ""
     @State private var isSuccess = false
+    @State private var pendingEmailToLogin: String?
+    
+    @EnvironmentObject var session: SessionManager
+    @Environment(\.dismiss) var dismiss
     
     var body: some View {
-        if userIsLoggedIn{
-            //Go to home page
-        }
-        else{
-            content
-        }
-    }
-    
-    var content: some View{
         NavigationView {
             VStack {
                 
@@ -144,9 +138,11 @@ struct LoginView: View {
                     onCompletion: { result in
                         AuthManager.shared.handleAppleResult(result) { res in
                             switch res {
-                            case .success:
+                            case .success(let authResult):
                                 alertMessage = "Login with Apple successful!"
                                 isSuccess = true
+                                let email = authResult.user.email ?? "unknown@apple.com"
+                                pendingEmailToLogin = email
                             case .failure(let error):
                                 alertMessage = error.localizedDescription
                                 isSuccess = false
@@ -195,15 +191,18 @@ struct LoginView: View {
                 Alert(
                     title: Text(isSuccess ? "Success" : "Error"),
                     message: Text(alertMessage),
-                    dismissButton: .default(Text("OK"))
+                    dismissButton: .default(Text("OK")) {
+                        if isSuccess, let email = pendingEmailToLogin {
+                            session.loginUser(email: email)
+                        }
+                    }
                 )
             }
-//            .onAppear{
-//                Auth.auth().addStateDidChangeListener { auth, user in
-//                    if user != nil {
-//                        userIsLoggedIn.toggle()
-//                    }}
-//            }
+            .onChange(of: session.isLoggedIn) {
+                if session.isLoggedIn {
+                    dismiss()
+                }
+            }
         }
     }
     
@@ -214,7 +213,7 @@ struct LoginView: View {
             showAlert = true
             return
         }
-
+        
         guard Validators.isValidPassword(password) else {
             alertMessage = "Password must be at least 6 characters."
             isSuccess = false
@@ -226,10 +225,10 @@ struct LoginView: View {
             if let error = error {
                 alertMessage = error.localizedDescription
                 isSuccess = false
-            } else {
+            } else if let user = result?.user {
                 alertMessage = "Login successful!"
                 isSuccess = true
-                // userIsLoggedIn = true
+                pendingEmailToLogin = user.email
             }
             showAlert = true
         }

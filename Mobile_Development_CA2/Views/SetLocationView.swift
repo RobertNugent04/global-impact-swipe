@@ -22,6 +22,9 @@ struct SetLocationView: View {
     @StateObject private var autocomplete = AutocompleteViewModel()
         
     @State private var isSelectingSuggestion = false
+    
+    @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject var locationStore: LocationStore
 
 
     var body: some View {
@@ -114,6 +117,8 @@ struct SetLocationView: View {
                 Spacer()
                 Button(action: {
                     // Set the location of the user
+                    locationStore.setLocation(address: searchText.isEmpty ? "Current Location" : searchText, coordinate: coordinate)
+                    dismiss()
                 }) {
                     Text("Set Location")
                         .fontWeight(.bold)
@@ -131,9 +136,16 @@ struct SetLocationView: View {
         .onAppear {
             locationManager.checkLocationAuthorization()
         }
+        .navigationBarBackButtonHidden(true)
+        .toolbar{
+            ToolbarItem(placement: .cancellationAction) {
+                Button("Cancel"){dismiss()}
+            }
+        }
     }
 }
 
 #Preview {
     SetLocationView()
+        .environmentObject(LocationStore())
 }

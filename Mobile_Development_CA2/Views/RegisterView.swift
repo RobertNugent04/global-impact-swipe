@@ -19,6 +19,10 @@ struct RegisterView: View {
     @State private var showAlert = false
     @State private var alertMessage = ""
     @State private var isSuccess = false
+    @State private var pendingEmailToLogin: String?
+    
+    @EnvironmentObject var session: SessionManager
+    @Environment(\.dismiss) var dismiss
     
     var body: some View {
         VStack {
@@ -154,9 +158,11 @@ struct RegisterView: View {
                 onCompletion: { result in
                     AuthManager.shared.handleAppleResult(result) { res in
                         switch res {
-                        case .success:
+                        case .success(let authResult):
                             alertMessage = "Login with Apple successful!"
                             isSuccess = true
+                            let email = authResult.user.email ?? "unknown@apple.com"
+                            pendingEmailToLogin = email
                         case .failure(let error):
                             alertMessage = error.localizedDescription
                             isSuccess = false
@@ -181,12 +187,21 @@ struct RegisterView: View {
         .padding(.top, 130)
         .padding(.bottom, 170)
         .alert(isPresented: $showAlert) {
-                Alert(
-                    title: Text(isSuccess ? "Success" : "Error"),
-                    message: Text(alertMessage),
-                    dismissButton: .default(Text("OK"))
-                )
+            Alert(
+                title: Text(isSuccess ? "Success" : "Error"),
+                message: Text(alertMessage),
+                dismissButton: .default(Text("OK")) {
+                    if isSuccess, let email = pendingEmailToLogin {
+                        session.loginUser(email: email)
+                    }
+                }
+            )
+        }
+        .onChange(of: session.isLoggedIn) {
+            if session.isLoggedIn {
+                dismiss()
             }
+        }
     }
     
     func register(){
@@ -215,10 +230,10 @@ struct RegisterView: View {
             if let error = error {
                 alertMessage = error.localizedDescription
                 isSuccess = false
-            }else{
+            }else if let user = result?.user {
                 alertMessage = "Registration successful."
                 isSuccess = true
-                // Navigation will be done here
+                pendingEmailToLogin = user.email
             }
             showAlert = true
         }
