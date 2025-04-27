@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct AboutView: View {
+    @EnvironmentObject private var session     : SessionManager
+    @EnvironmentObject private var settings     : AppSettings
     @Environment(\.openURL) private var openURL
 
     var body: some View {
@@ -147,4 +149,7 @@ struct AboutView: View {
     }
 }
 
-#Preview { AboutView() }
+#Preview { AboutView()
+        .environmentObject(SessionManager())
+        .environmentObject(AppSettings())
+}

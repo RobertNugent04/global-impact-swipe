@@ -11,6 +11,7 @@ import MapKit
 struct ProjectDetailView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.openURL) private var openURL
+    @EnvironmentObject private var settings     : AppSettings
     
     @EnvironmentObject private var session: SessionManager
     @State private var isLiked: Bool
@@ -156,6 +157,7 @@ struct ProjectDetailView: View {
             .padding([.leading,.bottom],24)
         }
         .navigationBarBackButtonHidden(true)
+        .preferredColorScheme(settings.useDarkMode ? .dark : nil)
     }
     
     private func label(_ title:String,_ value:String)->some View {
@@ -251,4 +253,6 @@ private struct FullPager: View {
         likedBy: []
     ))
     .environmentObject(SessionManager())
+    .environmentObject(LocationStore())
+    .environmentObject(AppSettings())
 }

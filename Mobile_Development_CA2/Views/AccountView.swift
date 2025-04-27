@@ -13,6 +13,9 @@ import FirebaseFirestore
 import FirebaseStorage
 
 struct AccountView: View {
+    @EnvironmentObject private var session     : SessionManager
+    @EnvironmentObject private var settings     : AppSettings
+    
     // Hardcoded values for email, password, and confirm password
     @State private var email: String = "user@example.com"
     @State private var password: String = "**********"
@@ -30,7 +33,7 @@ struct AccountView: View {
                     Text("Edit Profile")
                         .font(.title)
                         .fontWeight(.bold)
-                        .foregroundColor(Color(hex: "#333333"))
+                        .foregroundColor(.primary)
                     
                     ZStack(alignment: .bottomTrailing) {
                         
@@ -58,7 +61,7 @@ struct AccountView: View {
                                 Image(systemName: "camera.fill")
                                     .padding(6)
                                     .font(.system(size: 25))
-                                    .background(Color.white)
+                                    .background(Color(.systemBackground))
                                     .clipShape(Circle())
                                     .offset(x: 5, y: 5)
                                     .foregroundColor(Color(hex: "#242760"))
@@ -82,7 +85,7 @@ struct AccountView: View {
                 // Name Title and Field
                 Text("Name")
                     .font(.headline)
-                    .foregroundColor(.black)
+                    .foregroundColor(.primary)
                     .padding(.leading, 22)
                 
                 ZStack{
@@ -90,10 +93,11 @@ struct AccountView: View {
                     TextField("Enter your name", text: $userData.name)
                         .font(Font.system(size: 20))
                         .padding(9)
-                        .background(RoundedRectangle(cornerRadius: 8).fill(Color.white))
+                        .background(RoundedRectangle(cornerRadius: 8).fill(Color(.systemBackground)))
                         .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 1))
                         .frame(width: 330)
                         .frame(maxWidth: .infinity)
+                        .foregroundColor(.primary)
                     
                     HStack {
                         Spacer()
@@ -117,10 +121,11 @@ struct AccountView: View {
                     TextField("Enter your e-mail", text: $email)
                         .font(Font.system(size: 20))
                         .padding(9)
-                        .background(RoundedRectangle(cornerRadius: 8).fill(Color.white))
+                        .background(RoundedRectangle(cornerRadius: 8).fill(Color(.systemBackground)))
                         .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 1))
                         .frame(width: 330)
                         .frame(maxWidth: .infinity)
+                        .foregroundColor(.primary)
                         .disabled(true)
                     
                     HStack {
@@ -145,10 +150,11 @@ struct AccountView: View {
                     TextField("Enter your phone number", text: $userData.phoneNumber)
                         .font(Font.system(size: 20))
                         .padding(9)
-                        .background(RoundedRectangle(cornerRadius: 8).fill(Color.white))
+                        .background(RoundedRectangle(cornerRadius: 8).fill(Color(.systemBackground)))
                         .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 1))
                         .frame(width: 330)
                         .frame(maxWidth: .infinity)
+                        .foregroundColor(.primary)
                     
                     HStack {
                         Spacer()
@@ -171,11 +177,12 @@ struct AccountView: View {
                     SecureField("", text: $password)
                         .font(Font.system(size: 20))
                         .padding(9)
-                        .background(RoundedRectangle(cornerRadius: 8).fill(Color.white))
+                        .background(RoundedRectangle(cornerRadius: 8).fill(Color(.systemBackground)))
                         .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 1))
                         .frame(width: 330)
                         .disabled(true)
                         .frame(maxWidth: .infinity)
+                        .foregroundColor(.primary)
                     
                     HStack {
                         Spacer()
@@ -194,7 +201,7 @@ struct AccountView: View {
                         saveUserData()
                     }) {
                         Text("Save Changes")
-                            .foregroundColor(.white)
+                            .foregroundColor(.primary)
                             .frame(maxWidth: .infinity)
                             .padding()
                             .background(Color(hex: "#4CAF50"))
@@ -240,6 +247,7 @@ struct AccountView: View {
                 )
             }
         }
+        .preferredColorScheme(settings.useDarkMode ? .dark : nil)
         
     }
     
@@ -290,4 +298,6 @@ struct AccountView: View {
 
 #Preview {
     AccountView()
+        .environmentObject(SessionManager())
+        .environmentObject(AppSettings())
 }
