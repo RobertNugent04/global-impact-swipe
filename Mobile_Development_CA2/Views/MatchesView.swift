@@ -9,6 +9,7 @@ import SwiftUI
 
 struct MatchesView: View {
     @EnvironmentObject private var session: SessionManager
+    @EnvironmentObject private var settings     : AppSettings
     @StateObject private var vm = MatchesVM()
 
     var body: some View {
@@ -42,7 +43,7 @@ struct MatchesView: View {
                     }
                 }
             }
-//            .navigationTitle("Matches")
+
             .navigationDestination(for: ProjectDTO.self) { p in
                 ProjectDetailView(project: p)
             }
@@ -56,7 +57,9 @@ struct MatchesView: View {
                         get: { vm.error != nil },
                         set: { _ in vm.error = nil })
             ) { Button("OK", role: .cancel) {} }
-            message: { Text(vm.error ?? "") }
+            message: { Text(vm.error ?? "")
+            }
+            .preferredColorScheme(settings.useDarkMode ? .dark : nil)
         }
     }
 }

@@ -24,7 +24,7 @@ struct MatchCard: View {
             VStack(alignment:.leading, spacing:4){
                 Text(project.title)
                     .font(.headline).lineLimit(2)
-                    .foregroundColor(.black)
+                    .foregroundColor(.primary)
                 Text(project.description)
                     .font(.subheadline)
                     .foregroundColor(.secondary)

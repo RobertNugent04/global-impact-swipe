@@ -11,6 +11,7 @@ import SwiftUI
 struct SwipeView: View {
     @EnvironmentObject private var locationStore: LocationStore
     @EnvironmentObject private var session     : SessionManager
+    @EnvironmentObject private var settings     : AppSettings
     
     @StateObject private var vm               = SwipeVM()
 
@@ -53,7 +54,7 @@ struct SwipeView: View {
             await vm.fetch(for: country)
         }
         .navigationDestination(isPresented: $showDetail) {
-//            ProjectDetailView(project: tappedProject!)
+
             if let tapped = tappedProject {
                     ProjectDetailView(project: tapped)
                 } else {
@@ -62,6 +63,7 @@ struct SwipeView: View {
                         .foregroundColor(.red)
                 }
         }
+        .preferredColorScheme(settings.useDarkMode ? .dark : nil)
     }
 
     // MARK: - Gestures
@@ -117,4 +119,5 @@ struct SwipeView: View {
     SwipeView()
         .environmentObject(LocationStore())
         .environmentObject(SessionManager())
+        .environmentObject(AppSettings())
 }
