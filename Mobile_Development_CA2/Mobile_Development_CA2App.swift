@@ -26,6 +26,9 @@ struct Mobile_Development_CA2App: App {
     
     init() {
         FirebaseApp.configure()
+        
+        // Ask for notification permission at first launch
+        Task { await NotificationManager.shared.requestAuthorization() }
     }
     
     var body: some Scene {
