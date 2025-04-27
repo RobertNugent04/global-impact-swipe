@@ -80,6 +80,14 @@ struct ProjectDetailView: View {
                     }
                     .padding(.horizontal)
                     
+                    // Map snapshot with the lat and lon
+                    Map(initialPosition: .region(.init(
+                            center: location,
+                            span: .init(latitudeDelta: 0.15, longitudeDelta: 0.15))))
+                        .frame(height:180)
+                        .clipShape(RoundedRectangle(cornerRadius:12))
+                        .padding(.horizontal)
+                    
                 }
             }
             
