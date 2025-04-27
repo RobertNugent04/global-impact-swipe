@@ -55,19 +55,6 @@ struct HomeView: View {
         } message:{ Text(vm.error ?? "") }
         .onTapGesture { showMenu=false }
         .preferredColorScheme(settings.useDarkMode ? .dark : nil)
-        
-        
-//        VStack(alignment: .leading) {
-//
-//
-//            Spacer()
-//        }
-//        .frame(maxWidth: .infinity, alignment: .leading)
-//        .navigationDestination(isPresented: $showSetLocation) {
-//            SetLocationView()
-//        }
-//        .preferredColorScheme(settings.useDarkMode ? .dark : nil)
-//        .onTapGesture { if showMenu { showMenu = false } }
     }
     
     private var header: some View {

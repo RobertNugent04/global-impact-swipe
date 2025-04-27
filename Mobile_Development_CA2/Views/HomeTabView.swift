@@ -8,6 +8,10 @@
 import SwiftUI
 
 struct HomeTabView: View {
+    @EnvironmentObject private var locationStore: LocationStore
+    @EnvironmentObject private var settings     : AppSettings
+    @EnvironmentObject private var session      : SessionManager
+    
     @State private var selection: TabBarItem = .home
 
     var body: some View {
@@ -19,7 +23,7 @@ struct HomeTabView: View {
                 case .swipe:         SwipeView()
                 case .matches:       MatchesView()
                 case .notifications: NotificationsView()
-                case .profile:       ProfileView()
+                case .profile:       AccountView()
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -34,4 +38,7 @@ struct HomeTabView: View {
 
 #Preview {
     HomeTabView()
+        .environmentObject(LocationStore())
+        .environmentObject(AppSettings())
+        .environmentObject(SessionManager())
 }

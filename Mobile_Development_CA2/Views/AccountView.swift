@@ -23,86 +23,88 @@ struct AccountView: View {
     @State private var userData = UserData()
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 20) {
-            
-            VStack {
-                Text("Edit Profile")
-                    .font(.title)
-                    .fontWeight(.bold)
-                    .foregroundColor(Color(hex: "#333333"))
+        ScrollView{
+            VStack(alignment: .leading, spacing: 15) {
                 
-                ZStack(alignment: .bottomTrailing) {
+                VStack {
+                    Text("Edit Profile")
+                        .font(.title)
+                        .fontWeight(.bold)
+                        .foregroundColor(Color(hex: "#333333"))
                     
-                    // Show the selected profile image if available
-                    if let data = profileImageData, let image = UIImage(data: data) {
-                        Image(uiImage: image)
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: 150, height: 150)
-                            .clipShape(Circle())
-                    } else {
-                        Image(systemName: "person.circle.fill")
-                            .resizable()
-                            .frame(width: 150, height: 150)
-                            .foregroundColor(.gray)
-                    }
-                    
-                    //Some code for PhotosPicker taken from the following sources:
-                    //https://developer.apple.com/documentation/photokit/bringing-photos-picker-to-your-swiftui-app
-                    //https://stackoverflow.com/questions/57110290/how-to-pick-image-from-gallery-in-swiftui
-                    PhotosPicker(
-                        selection: $selectedItem,
-                        matching: .images,
-                        photoLibrary: .shared()) {
-                            Image(systemName: "camera.fill")
-                                .padding(6)
-                                .font(.system(size: 25))
-                                .background(Color.white)
+                    ZStack(alignment: .bottomTrailing) {
+                        
+                        // Show the selected profile image if available
+                        if let data = profileImageData, let image = UIImage(data: data) {
+                            Image(uiImage: image)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 150, height: 150)
                                 .clipShape(Circle())
-                                .offset(x: 5, y: 5)
+                        } else {
+                            Image(systemName: "person.circle.fill")
+                                .resizable()
+                                .frame(width: 150, height: 150)
+                                .foregroundColor(.gray)
                         }
-                        .onChange(of: selectedItem) {
-                            guard let newItem = selectedItem else { return }
-                            
-                            Task {
-                                if let data = try? await newItem.loadTransferable(type: Data.self),
-                                   let uid = Auth.auth().currentUser?.uid {
-                                    profileImageData = data
-                                    saveImageLocally(data, uid: uid)
+                        
+                        //Some code for PhotosPicker taken from the following sources:
+                        //https://developer.apple.com/documentation/photokit/bringing-photos-picker-to-your-swiftui-app
+                        //https://stackoverflow.com/questions/57110290/how-to-pick-image-from-gallery-in-swiftui
+                        PhotosPicker(
+                            selection: $selectedItem,
+                            matching: .images,
+                            photoLibrary: .shared()) {
+                                Image(systemName: "camera.fill")
+                                    .padding(6)
+                                    .font(.system(size: 25))
+                                    .background(Color.white)
+                                    .clipShape(Circle())
+                                    .offset(x: 5, y: 5)
+                                    .foregroundColor(Color(hex: "#242760"))
+                            }
+                            .onChange(of: selectedItem) {
+                                guard let newItem = selectedItem else { return }
+                                
+                                Task {
+                                    if let data = try? await newItem.loadTransferable(type: Data.self),
+                                       let uid = Auth.auth().currentUser?.uid {
+                                        profileImageData = data
+                                        saveImageLocally(data, uid: uid)
+                                    }
                                 }
                             }
-                        }
+                    }
+                    .frame(width: 150, height: 150)
                 }
-                .frame(width: 150, height: 150)
-            }
-            .frame(maxWidth: .infinity)
-            
+                .frame(maxWidth: .infinity)
+                
                 // Name Title and Field
                 Text("Name")
                     .font(.headline)
                     .foregroundColor(.black)
                     .padding(.leading, 22)
                 
-            ZStack{
-            
-                TextField("Enter your name", text: $userData.name)
-                    .font(Font.system(size: 20))
-                    .padding(9)
-                    .background(RoundedRectangle(cornerRadius: 8).fill(Color.white))
-                    .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 1))
-                    .frame(width: 330)
-                    .frame(maxWidth: .infinity)
-                
-                HStack {
-                    Spacer()
-                    Image(systemName: "pencil.circle.fill")
-                        .resizable()
-                        .frame(width: 24, height: 24)
-                        .foregroundColor(.gray)
-                        .padding(.trailing, 25)
+                ZStack{
+                    
+                    TextField("Enter your name", text: $userData.name)
+                        .font(Font.system(size: 20))
+                        .padding(9)
+                        .background(RoundedRectangle(cornerRadius: 8).fill(Color.white))
+                        .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 1))
+                        .frame(width: 330)
+                        .frame(maxWidth: .infinity)
+                    
+                    HStack {
+                        Spacer()
+                        Image(systemName: "pencil.circle.fill")
+                            .resizable()
+                            .frame(width: 24, height: 24)
+                            .foregroundColor(.gray)
+                            .padding(.trailing, 25)
+                    }
+                    
                 }
-                
-            }
                 
                 // E-mail Title and Field
                 Text("E-mail")
@@ -110,133 +112,133 @@ struct AccountView: View {
                     .foregroundColor(.black)
                     .padding(.leading, 22)
                 
-            ZStack{
-            
-                TextField("Enter your e-mail", text: $email)
-                    .font(Font.system(size: 20))
-                    .padding(9)
-                    .background(RoundedRectangle(cornerRadius: 8).fill(Color.white))
-                    .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 1))
-                    .frame(width: 330)
-                    .frame(maxWidth: .infinity)
-                    .disabled(true)
-                
-                HStack {
-                    Spacer()
-                    Image(systemName: "lock.circle.fill")
-                        .resizable()
-                        .frame(width: 24, height: 24)
-                        .foregroundColor(.gray)
-                        .padding(.trailing, 25)
-                }
+                ZStack{
                     
-            }
-            
-            // Phone number Title and Field
-            Text("Phone Number")
-                .font(.headline)
-                .foregroundColor(.black)
-                .padding(.leading, 22)
-            
-            ZStack{
-                
-                TextField("Enter your phone number", text: $userData.phoneNumber)
-                    .font(Font.system(size: 20))
-                    .padding(9)
-                    .background(RoundedRectangle(cornerRadius: 8).fill(Color.white))
-                    .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 1))
-                    .frame(width: 330)
-                    .frame(maxWidth: .infinity)
-             
-                HStack {
-                    Spacer()
-                    Image(systemName: "pencil.circle.fill")
-                        .resizable()
-                        .frame(width: 24, height: 24)
-                        .foregroundColor(.gray)
-                        .padding(.trailing, 25)
-                }
-            }
-            
-            //Password Title and Field
-            Text("Password")
-                .font(.headline)
-                .foregroundColor(.black)
-                .padding(.leading, 22)
-            
-            ZStack{
-                
-                SecureField("", text: $password)
-                    .font(Font.system(size: 20))
-                    .padding(9)
-                    .background(RoundedRectangle(cornerRadius: 8).fill(Color.white))
-                    .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 1))
-                    .frame(width: 330)
-                    .disabled(true)
-                    .frame(maxWidth: .infinity)
-             
-                HStack {
-                    Spacer()
-                    Image(systemName: "lock.circle.fill")
-                        .resizable()
-                        .frame(width: 24, height: 24)
-                        .foregroundColor(.gray)
-                        .padding(.trailing, 25)
-                }
-                
-            }
-            
-            HStack(spacing: 20) {
-                Button(action: {
-                    // Save Changes
-                    saveUserData()
-                }) {
-                    Text("Save Changes")
-                        .foregroundColor(.white)
+                    TextField("Enter your e-mail", text: $email)
+                        .font(Font.system(size: 20))
+                        .padding(9)
+                        .background(RoundedRectangle(cornerRadius: 8).fill(Color.white))
+                        .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 1))
+                        .frame(width: 330)
                         .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color(hex: "#4CAF50"))
-                        .cornerRadius(8)
+                        .disabled(true)
+                    
+                    HStack {
+                        Spacer()
+                        Image(systemName: "lock.circle.fill")
+                            .resizable()
+                            .frame(width: 24, height: 24)
+                            .foregroundColor(.gray)
+                            .padding(.trailing, 25)
+                    }
+                    
                 }
                 
-                Button(action: {
-                    // Cancel Changes
-                    loadUserData()
-                }) {
-                    Text("Cancel")
-                        .foregroundColor(.red)
+                // Phone number Title and Field
+                Text("Phone Number")
+                    .font(.headline)
+                    .foregroundColor(.black)
+                    .padding(.leading, 22)
+                
+                ZStack{
+                    
+                    TextField("Enter your phone number", text: $userData.phoneNumber)
+                        .font(Font.system(size: 20))
+                        .padding(9)
+                        .background(RoundedRectangle(cornerRadius: 8).fill(Color.white))
+                        .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 1))
+                        .frame(width: 330)
                         .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color(.systemGray6))
-                        .cornerRadius(8)
+                    
+                    HStack {
+                        Spacer()
+                        Image(systemName: "pencil.circle.fill")
+                            .resizable()
+                            .frame(width: 24, height: 24)
+                            .foregroundColor(.gray)
+                            .padding(.trailing, 25)
+                    }
+                }
+                
+                //Password Title and Field
+                Text("Password")
+                    .font(.headline)
+                    .foregroundColor(.black)
+                    .padding(.leading, 22)
+                
+                ZStack{
+                    
+                    SecureField("", text: $password)
+                        .font(Font.system(size: 20))
+                        .padding(9)
+                        .background(RoundedRectangle(cornerRadius: 8).fill(Color.white))
+                        .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 1))
+                        .frame(width: 330)
+                        .disabled(true)
+                        .frame(maxWidth: .infinity)
+                    
+                    HStack {
+                        Spacer()
+                        Image(systemName: "lock.circle.fill")
+                            .resizable()
+                            .frame(width: 24, height: 24)
+                            .foregroundColor(.gray)
+                            .padding(.trailing, 25)
+                    }
+                    
+                }
+                
+                HStack(spacing: 20) {
+                    Button(action: {
+                        // Save Changes
+                        saveUserData()
+                    }) {
+                        Text("Save Changes")
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(Color(hex: "#4CAF50"))
+                            .cornerRadius(8)
+                    }
+                    
+                    Button(action: {
+                        // Cancel Changes
+                        loadUserData()
+                    }) {
+                        Text("Cancel")
+                            .foregroundColor(.red)
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(Color(.systemGray6))
+                            .cornerRadius(8)
+                    }
+                }
+                .frame(width: 330)
+                .padding(.top, 10)
+                .padding(.leading, 22)
+                
+                
+            }
+            .padding()
+            .padding(.bottom, 20)
+            .onAppear {
+                loadUserData()
+                
+                if let uid = Auth.auth().currentUser?.uid {
+                    let url = getProfileImagePath(for: uid)
+                    if FileManager.default.fileExists(atPath: url.path),
+                       let data = try? Data(contentsOf: url) {
+                        profileImageData = data
+                    }
                 }
             }
-            .frame(width: 330)
-            .padding(.top, 10)
-            .padding(.leading, 22)
-            
-            
-        }
-        .padding()
-        .padding(.top, 130)
-        .padding(.bottom, 170)
-        .onAppear {
-            loadUserData()
-            
-            if let uid = Auth.auth().currentUser?.uid {
-                let url = getProfileImagePath(for: uid)
-                if FileManager.default.fileExists(atPath: url.path),
-                   let data = try? Data(contentsOf: url) {
-                    profileImageData = data
-                }
+            .alert(isPresented: $showAlert) {
+                Alert(
+                    title: Text("Save Status"),
+                    message: Text(saveMessage),
+                    dismissButton: .default(Text("OK"))
+                )
             }
-        }
-        .alert(isPresented: $showAlert) {
-            Alert(
-                title: Text("Save Status"),
-                message: Text(saveMessage),
-                dismissButton: .default(Text("OK"))
-            )
         }
         
     }

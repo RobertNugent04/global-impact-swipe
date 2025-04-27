@@ -18,4 +18,9 @@ actor APIClient {
         let (data, _) = try await URLSession.shared.data(from: url)
         return try JSONDecoder().decode(T.self, from: data)
     }
+    
+    // project endpoint for liked project
+    func likedProjects(for email: String) async throws -> [ProjectDTO] {
+        try await get("/projects/liked/\(email)")
+    }
 }

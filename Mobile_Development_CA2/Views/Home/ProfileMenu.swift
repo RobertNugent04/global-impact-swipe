@@ -49,6 +49,7 @@ struct ProfileMenu: View {
                 Label("About", systemImage: "info.circle")
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding()
+                    .foregroundColor(.black)
             }
 
             Divider()
