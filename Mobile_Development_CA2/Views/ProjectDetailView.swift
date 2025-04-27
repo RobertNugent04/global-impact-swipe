@@ -80,6 +80,35 @@ struct ProjectDetailView: View {
                     }
                     .padding(.horizontal)
                     
+                    // Funding progress bar made with progress view
+                    VStack(alignment:.leading,spacing:6){
+                        Text("Funding")
+                            .font(.headline)
+                        ProgressView(value: fundingRatio)
+                            .tint(Color(hex:"#4CAF50"))
+                        Text("€\(project.fundingRaised.formatted()) of €\(project.fundingGoal.formatted()) raised")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                    .padding(.horizontal)
+                    
+                    // Contact
+                    VStack(alignment:.leading,spacing:10) {
+                        Button {
+                            if let url = URL(string:"tel://\(project.contactNumber.filter { $0.isNumber })"),
+                               UIApplication.shared.canOpenURL(url) {
+                                UIApplication.shared.open(url)
+                            }
+                        } label: {
+                            Label(project.contactNumber,systemImage:"phone.fill")
+                                .foregroundColor(Color(hex:"#4CAF50"))
+                        }
+                        Link(destination: URL(string:project.contactUrl)!) {
+                            Label("Visit website",systemImage:"globe")
+                        }
+                    }
+                    .padding(.horizontal)
+                    
                     // Map snapshot with the lat and lon
                     Map(initialPosition: .region(.init(
                             center: location,
@@ -87,6 +116,7 @@ struct ProjectDetailView: View {
                         .frame(height:180)
                         .clipShape(RoundedRectangle(cornerRadius:12))
                         .padding(.horizontal)
+                        .padding(.bottom, 60)
                     
                 }
             }
