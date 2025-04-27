@@ -22,7 +22,7 @@ final class SwipeVM: ObservableObject {
         defer { isBusy = false }
 
         guard let url = URL(string:
-            "http://localhost:4000/projects?country=\(country)&status=active"
+            "http://localhost:4000/projects?country=\(country)"
         ) else { return }
 
         do {
