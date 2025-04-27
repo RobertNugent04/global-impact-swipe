@@ -14,7 +14,7 @@ struct ImageCarousel: View {
     var body: some View {
         TabView {
             ForEach(urls, id:\.self){ path in
-                AsyncImage(url: URL(string:"http://localhost:4000/"+path)) { phase in
+                AsyncImage(url: URL(string:"http://localhost:4000/images/"+path)) { phase in
                     switch phase {
                     case .success(let image): image
                             .resizable().scaledToFill()

@@ -11,11 +11,11 @@ struct TipCard: View {
     let tip: TipDTO
     var body: some View {
         HStack(alignment:.top,spacing:12){
-            AsyncImage(url: URL(string:"http://localhost:4000/"+tip.image)){ phase in
+            AsyncImage(url: URL(string:"http://localhost:4000/images/"+tip.image)){ phase in
                 (phase.image ?? Image("default_image"))
                     .resizable().scaledToFill()
             }
-            .frame(width:80,height:80)
+            .frame(width:110,height:140)
             .clipShape(RoundedRectangle(cornerRadius:6))
             
             VStack(alignment:.leading,spacing:4){
@@ -23,7 +23,7 @@ struct TipCard: View {
                     .font(.subheadline)
                 Link(destination: URL(string: tip.source)!) {
                     Text("Learn More")
-                        .font(.caption).padding(.horizontal,10).padding(.vertical,4)
+                        .font(.caption).padding(.horizontal,13).padding(.vertical,6)
                         .background(Color(hex:"#4CAF50"))
                         .foregroundColor(.white)
                         .clipShape(Capsule())
