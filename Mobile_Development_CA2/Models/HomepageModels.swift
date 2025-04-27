@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct ProjectDTO: Codable, Identifiable {
+struct ProjectDTO: Codable, Identifiable, Hashable {
     let id               : String
     let title            : String
     let status           : String
@@ -24,6 +24,7 @@ struct ProjectDTO: Codable, Identifiable {
     let contactNumber    : String
     let fundingGoal      : Int
     let fundingRaised    : Int
+    let likedBy          : [String]?
 }
 
 struct TipDTO:     Codable, Identifiable {

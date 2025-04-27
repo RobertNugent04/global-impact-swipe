@@ -13,12 +13,21 @@ struct ProjectDetailView: View {
     @Environment(\.openURL) private var openURL
     
     @EnvironmentObject private var session: SessionManager
-    @State private var isLiked = false
+    @State private var isLiked: Bool
+    
     @State private var showPager = false
     
     @StateObject private var vm = SwipeVM()
     
     let project: ProjectDTO
+    
+    init(project: ProjectDTO, session: SessionManager = .shared) {
+        self.project = project
+        let email    = session.userEmail?.lowercased() ?? ""
+        _isLiked     = State(
+            initialValue: (project.likedBy ?? []).contains(email)
+        )
+    }
     
     // helpers
     private var fundingRatio: Double {
@@ -238,7 +247,8 @@ private struct FullPager: View {
         contactUrl: "https://example.com",
         contactNumber: "+353123456789",
         fundingGoal: 50000,
-        fundingRaised: 25000
+        fundingRaised: 25000,
+        likedBy: []
     ))
     .environmentObject(SessionManager())
 }
