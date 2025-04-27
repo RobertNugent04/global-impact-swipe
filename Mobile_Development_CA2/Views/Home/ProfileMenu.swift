@@ -62,7 +62,7 @@ struct ProfileMenu: View {
                     .padding()
             }
         }
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 16))
+        .background(.ultraThickMaterial, in: RoundedRectangle(cornerRadius: 16))
         .frame(minWidth: 260, idealWidth: 300, maxWidth: 340)
         .padding(.top, 8)
         .shadow(radius: 4)

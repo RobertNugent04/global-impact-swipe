@@ -23,6 +23,7 @@ struct HomeView: View {
     var body: some View {
         ScrollView {
             header
+                .zIndex(3)
             
             if let p = vm.project {
                 ProjectCarousel(project: p)
@@ -31,7 +32,12 @@ struct HomeView: View {
                 ProgressView().frame(maxWidth:.infinity)
             }
             
-            Divider().padding(.vertical,8)
+//            Divider().padding(.vertical,8)
+            Rectangle()
+                .fill(.secondary)
+                .frame(height: 2)
+                .padding(.horizontal, 16)
+                .padding(.vertical, 8)
             
             
             if let t = vm.tip {
@@ -105,6 +111,7 @@ struct HomeView: View {
                         .environmentObject(settings)
                         .environmentObject(session)
                         .offset(y: 50)
+                        .zIndex(5)
                         .transition(.opacity.combined(with: .move(edge: .top)))
                 }
             }
@@ -132,12 +139,14 @@ private struct ProjectCarousel: View {
                     Text(project.title).font(.headline)
                     Text(project.description).font(.subheadline)
                         .foregroundColor(.secondary).lineLimit(2)
+                        .padding(.bottom, 6)
                     Text(project.startDate).font(.caption)
                         .foregroundColor(.black)
+                        .fontWeight(.medium)
                 }
                 Spacer()
                 Image("sdg\(project.sdgPrimary)")
-                    .resizable().frame(width:60,height:70)
+                    .resizable().frame(width:70,height:70)
             }
             .padding(.horizontal,4)
         }

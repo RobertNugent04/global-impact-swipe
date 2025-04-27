@@ -6,26 +6,40 @@
 //
 
 import SwiftUI
+import Combine
 
 struct ImageCarousel: View {
     let urls: [String]
     let placeholder: String
-    
+    var interval: TimeInterval = 4
+
+    @State private var index = 0
+    @State private var timer: Publishers.Autoconnect<Timer.TimerPublisher>
+
+    init(urls: [String], placeholder: String, interval: TimeInterval = 4) {
+        self.urls = urls
+        self.placeholder = placeholder
+        self.interval = interval
+        _timer = State(initialValue: Timer.publish(every: interval, on: .main, in: .common).autoconnect())
+    }
+
     var body: some View {
-        TabView {
-            ForEach(urls, id:\.self){ path in
-                AsyncImage(url: URL(string:"http://localhost:4000/images/"+path)) { phase in
+        TabView(selection: $index) {
+            ForEach(urls.indices, id: \.self) { i in
+                AsyncImage(url: URL(string: "http://localhost:4000/images/" + urls[i])) { phase in
                     switch phase {
-                    case .success(let image): image
-                            .resizable().scaledToFill()
-                    default: Image(placeholder)
-                            .resizable().scaledToFill()
+                    case .success(let img): img.resizable().scaledToFill()
+                    default: Image(placeholder).resizable().scaledToFill()
                     }
                 }
-                .frame(maxWidth:.infinity,maxHeight:.infinity)
-                .clipped()
+                .tag(i)
             }
         }
-        .tabViewStyle(.page(indexDisplayMode:.automatic))
+        .tabViewStyle(.page(indexDisplayMode: .automatic))
+        .onReceive(timer) { _ in
+            withAnimation(.easeInOut) {
+                index = (index + 1) % urls.count
+            }
+        }
     }
 }

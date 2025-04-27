@@ -10,28 +10,38 @@ import SwiftUI
 struct TipCard: View {
     let tip: TipDTO
     var body: some View {
-        HStack(alignment:.top,spacing:12){
-            AsyncImage(url: URL(string:"http://localhost:4000/images/"+tip.image)){ phase in
+        HStack(alignment: .bottom, spacing: 12) {
+            AsyncImage(url: URL(string:"http://localhost:4000/images/"+tip.image)) { phase in
                 (phase.image ?? Image("default_image"))
                     .resizable().scaledToFill()
             }
-            .frame(width:110,height:140)
-            .clipShape(RoundedRectangle(cornerRadius:6))
+            .frame(width: 120, height: 140)
+            .clipShape(RoundedRectangle(cornerRadius: 6))
             
-            VStack(alignment:.leading,spacing:4){
+            VStack(alignment: .leading, spacing: 6) {
+                Spacer(minLength: 0)
+
                 Text(tip.text)
                     .font(.subheadline)
-                Link(destination: URL(string: tip.source)!) {
-                    Text("Learn More")
-                        .font(.caption).padding(.horizontal,13).padding(.vertical,6)
-                        .background(Color(hex:"#4CAF50"))
-                        .foregroundColor(.white)
-                        .clipShape(Capsule())
+
+                HStack {
+                    Spacer()
+                    Link(destination: URL(string: tip.source)!) {
+                        Text("Learn More")
+                            .font(.caption2).bold()
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 6)
+                            .background(Color(hex: "#4CAF50"))
+                            .foregroundColor(.white)
+                            .clipShape(Capsule())
+                    }
                 }
-                .padding(.top,4)
             }
             Spacer()
         }
+        .frame(maxWidth: .infinity, minHeight: 90, alignment: .bottomLeading)
         .padding(12)
+        .background(Color(uiColor: .secondarySystemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 8))
     }
 }
