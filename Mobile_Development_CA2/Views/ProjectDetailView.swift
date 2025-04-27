@@ -71,6 +71,15 @@ struct ProjectDetailView: View {
                     }
                     .padding(.horizontal)
                     
+                    // Key details of the project
+                    VStack(alignment:.leading,spacing:8) {
+                        label("Location", "\(project.city), \(project.country)")
+                        label("Status", project.status.capitalized)
+                        label("Start", pretty(project.startDate))
+                        label("Organizer", project.organizer)
+                    }
+                    .padding(.horizontal)
+                    
                 }
             }
             
