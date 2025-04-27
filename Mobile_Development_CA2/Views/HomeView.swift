@@ -31,8 +31,7 @@ struct HomeView: View {
             } else if vm.isBusy{
                 ProgressView().frame(maxWidth:.infinity)
             }
-            
-//            Divider().padding(.vertical,8)
+
             Rectangle()
                 .fill(.secondary)
                 .frame(height: 2)

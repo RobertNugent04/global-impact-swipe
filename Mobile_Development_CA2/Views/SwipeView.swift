@@ -54,7 +54,7 @@ struct SwipeView: View {
             await vm.fetch(for: country)
         }
         .navigationDestination(isPresented: $showDetail) {
-//            ProjectDetailView(project: tappedProject!)
+
             if let tapped = tappedProject {
                     ProjectDetailView(project: tapped)
                 } else {

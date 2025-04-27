@@ -23,7 +23,7 @@ final class NotificationManager {
 
     // MARK: – This is to Schedule a “Project liked” notification
     func scheduleLike(for project: ProjectDTO,
-                      inSeconds delay: TimeInterval = 30,
+                      inSeconds delay: TimeInterval = 10,
                       context: ModelContext) {
 
         let content       = UNMutableNotificationContent()

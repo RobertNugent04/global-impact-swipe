@@ -43,7 +43,7 @@ struct MatchesView: View {
                     }
                 }
             }
-//            .navigationTitle("Matches")
+
             .navigationDestination(for: ProjectDTO.self) { p in
                 ProjectDetailView(project: p)
             }
