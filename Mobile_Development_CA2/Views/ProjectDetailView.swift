@@ -10,8 +10,13 @@ import MapKit
 
 struct ProjectDetailView: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.openURL) private var openURL
+    
     @EnvironmentObject private var session: SessionManager
     @State private var isLiked = false
+    @State private var showPager = false
+    
+    @StateObject private var vm = SwipeVM()
     
     let project: ProjectDTO
     
@@ -46,6 +51,7 @@ struct ProjectDetailView: View {
                         
                         Button {
                             isLiked.toggle()
+                            SwipeVM.setLike(isLiked, for: project, email: session.userEmail ?? "")
                         } label: {
                             Image(systemName: isLiked ? "heart.fill" : "heart")
                                 .font(.system(size: 26, weight:.bold))
@@ -62,10 +68,10 @@ struct ProjectDetailView: View {
                         Text(project.description)
                         HStack(spacing:12) {
                             Image("sdg\(project.sdgPrimary)")
-                                .resizable().frame(width:42,height:48)
+                                .resizable().frame(width:52,height:58)
                             ForEach(project.sdgSecondary, id:\.self) {
                                 Image("sdg\($0)")
-                                    .resizable().frame(width:30,height:36)
+                                    .resizable().frame(width:46,height:46)
                             }
                         }
                     }
@@ -95,10 +101,7 @@ struct ProjectDetailView: View {
                     // Contact
                     VStack(alignment:.leading,spacing:10) {
                         Button {
-                            if let url = URL(string:"tel://\(project.contactNumber.filter { $0.isNumber })"),
-                               UIApplication.shared.canOpenURL(url) {
-                                UIApplication.shared.open(url)
-                            }
+                            call(project.contactNumber)
                         } label: {
                             Label(project.contactNumber,systemImage:"phone.fill")
                                 .foregroundColor(Color(hex:"#4CAF50"))
@@ -108,6 +111,16 @@ struct ProjectDetailView: View {
                         }
                     }
                     .padding(.horizontal)
+                    
+                    // Gallery of remaining images
+                    if project.images.count > 1 {
+                        ThumbStrip(images: Array(project.images),
+                                   onTap: { showPager = true })
+                        .sheet(isPresented: $showPager) {
+                            FullPager(images: project.images)
+                        }
+                        .padding(.horizontal)
+                    }
                     
                     // Map snapshot with the lat and lon
                     Map(initialPosition: .region(.init(
@@ -147,7 +160,64 @@ struct ProjectDetailView: View {
         ISO8601DateFormatter().date(from: iso)?
             .formatted(date:.abbreviated,time:.omitted) ?? iso
     }
+    
+    private func call(_ number:String) {
+        let digits = number.filter(\.isNumber)
+        if let u = URL(string:"tel://"+digits) { openURL(u) }
+    }
 }
+
+
+// MARK: – Gallery components ---------------------------------------------
+private struct ThumbStrip: View {
+    let images: [String]
+    let onTap : ()->Void
+    var body: some View {
+        ScrollView(.horizontal,showsIndicators:false){
+            HStack(spacing:12){
+                ForEach(images,id:\.self){ path in
+                    AsyncImage(url: URL(string:"http://localhost:4000/images/"+path)) {
+                        $0.resizable().scaledToFill()
+                    } placeholder: {
+                        Color(.secondarySystemFill)
+                    }
+                    .frame(width:90,height:70)
+                    .clipped()
+                    .cornerRadius(8)
+                }
+            }
+            .onTapGesture { onTap() }
+        }
+    }
+}
+
+private struct FullPager: View {
+    let images:[String]
+    @Environment(\.dismiss) private var dismiss
+    var body: some View {
+        ZStack(alignment: .topTrailing){
+            TabView{
+                ForEach(images,id:\.self){ path in
+                    AsyncImage(url: URL(string:"http://localhost:4000/images/"+path)) {
+                        $0.resizable().scaledToFit()
+                    } placeholder: { Color(.secondarySystemFill) }
+                    .ignoresSafeArea()
+                }
+            }
+            .tabViewStyle(.page(indexDisplayMode:.automatic))
+            .indexViewStyle(.page(backgroundDisplayMode: .always))
+            Button {
+                dismiss()
+            } label: {
+                Image(systemName:"xmark.circle.fill")
+                    .font(.system(size:30))
+                    .foregroundColor(.black)
+                    .padding()
+            }
+        }
+    }
+}
+
 
 #Preview {
     ProjectDetailView(project: ProjectDTO(
@@ -155,7 +225,7 @@ struct ProjectDetailView: View {
         title: "Sample Project Title",
         status: "active",
         primaryImage: "projects/dublin_main.jpg",
-        images: ["sample_image1.jpg", "sample_image2.jpg"],
+        images: ["projects/wexford_1.jpg", "projects/wexford_2.jpeg", "projects/wexford_3.jpg"],
         description: "This is a sample project description. It should be long enough to see how it behaves in the UI.",
         startDate: "2025-05-01",
         sdgPrimary: 13,
@@ -172,4 +242,3 @@ struct ProjectDetailView: View {
     ))
     .environmentObject(SessionManager())
 }
-

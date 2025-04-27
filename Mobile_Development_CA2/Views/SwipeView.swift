@@ -70,13 +70,13 @@ struct SwipeView: View {
         if value.translation.width < -thresh {
             animateOffScreen(to: -500) {
                 if let proj = currentProject {
-                    vm.setLike(false, for: proj, email: session.userEmail ?? "")
+                    SwipeVM.setLike(false, for: proj, email: session.userEmail ?? "")
                 }
             }
         } else if value.translation.width > thresh {
             animateOffScreen(to: 500) {
                 if let proj = currentProject {
-                    vm.setLike(true, for: proj, email: session.userEmail ?? "")
+                    SwipeVM.setLike(true, for: proj, email: session.userEmail ?? "")
                 }
             }
         } else {

@@ -36,7 +36,7 @@ final class SwipeVM: ObservableObject {
     }
 
     // toggle like / unlike on backend
-    func setLike(_ like: Bool, for proj: ProjectDTO, email: String) {
+    static func setLike(_ like: Bool, for proj: ProjectDTO, email: String) {
         guard let url = URL(string:
             "http://localhost:4000/projects/\(proj.id)/\(like ? "like" : "unlike")"
         ) else { return }
@@ -48,4 +48,5 @@ final class SwipeVM: ObservableObject {
 
         URLSession.shared.dataTask(with: req).resume()
     }
+    
 }
